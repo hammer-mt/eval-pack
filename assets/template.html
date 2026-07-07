@@ -169,42 +169,32 @@
     <p class="lede">REPLACE: how the pieces connect / how data flows through the change.</p>
     <div class="diagram">
       <!-- Example diagram: replace boxes and labels with real names.
-           Styled per assets/diagram-style.md (shipped with this skill):
-           semantic component colors, arrows drawn before boxes, opaque mask rects under
-           semi-transparent fills. Inline SVG only — no external fonts or scripts.
-           Keep the dark background rect: it makes the diagram self-contained on both deck themes. -->
-      <svg width="640" height="180" viewBox="0 0 640 180" font-family="ui-monospace, Menlo, monospace">
+           Styled per assets/diagram-style.md (shipped with this skill): theme-adaptive
+           CSS-variable colors (the SVG inherits the deck theme — no dark canvas, no grid),
+           arrows drawn before boxes, unique marker id per svg.
+           Inline SVG only — no external fonts or scripts. -->
+      <svg width="640" height="132" viewBox="0 0 640 132" font-family="ui-monospace, Menlo, monospace">
         <defs>
-          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
-          </pattern>
-          <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+          <marker id="arr-map" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="var(--muted)"/>
           </marker>
         </defs>
-        <rect x="0" y="0" width="640" height="180" rx="8" fill="#020617"/>
-        <rect x="0" y="0" width="640" height="180" rx="8" fill="url(#grid)"/>
-        <!-- Arrows first, so they render behind the boxes. -->
-        <g stroke="#64748b" stroke-width="1.5">
-          <line x1="180" y1="86" x2="238" y2="86" marker-end="url(#arr)"/>
-          <line x1="410" y1="86" x2="468" y2="86" marker-end="url(#arr)"/>
+        <g stroke="var(--muted)" stroke-width="1.4">
+          <line x1="180" y1="66" x2="238" y2="66" marker-end="url(#arr-map)"/>
+          <line x1="410" y1="66" x2="468" y2="66" marker-end="url(#arr-map)"/>
         </g>
-        <!-- Boxes: opaque mask rect, then the semi-transparent styled rect. -->
         <g>
-          <rect x="10"  y="60" width="170" height="52" rx="6" fill="#0f172a"/>
-          <rect x="10"  y="60" width="170" height="52" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
-          <rect x="240" y="60" width="170" height="52" rx="6" fill="#0f172a"/>
-          <rect x="240" y="60" width="170" height="52" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
-          <rect x="470" y="60" width="160" height="52" rx="6" fill="#0f172a"/>
-          <rect x="470" y="60" width="160" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+          <rect x="10"  y="40" width="170" height="52" rx="6" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"/>
+          <rect x="240" y="40" width="170" height="52" rx="6" fill="var(--pass-bg)" stroke="var(--pass)" stroke-width="1.4"/>
+          <rect x="470" y="40" width="160" height="52" rx="6" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"/>
         </g>
         <g text-anchor="middle">
-          <text x="95"  y="82" fill="white" font-size="12" font-weight="600">REPLACE:</text>
-          <text x="95"  y="99" fill="#94a3b8" font-size="9">caller.py</text>
-          <text x="325" y="82" fill="white" font-size="12" font-weight="600">REPLACE:</text>
-          <text x="325" y="99" fill="#94a3b8" font-size="9">new_module.fn()</text>
-          <text x="550" y="82" fill="white" font-size="12" font-weight="600">REPLACE:</text>
-          <text x="550" y="99" fill="#94a3b8" font-size="9">output</text>
+          <text x="95"  y="61" fill="var(--ink)" font-size="12" font-weight="600">REPLACE:</text>
+          <text x="95"  y="78" fill="var(--muted)" font-size="9">caller.py</text>
+          <text x="325" y="61" fill="var(--pass)" font-size="12" font-weight="600">REPLACE:</text>
+          <text x="325" y="78" fill="var(--muted)" font-size="9">new_module.fn()</text>
+          <text x="550" y="61" fill="var(--ink)" font-size="12" font-weight="600">REPLACE:</text>
+          <text x="550" y="78" fill="var(--muted)" font-size="9">output</text>
         </g>
       </svg>
     </div>
@@ -212,76 +202,69 @@
 
   <!-- Architecture before/after: one slide per structural change (refactor, extraction, new seam),
        placed before the code-level slides — the reviewer reads architecture first, code only if necessary.
-       Same dependency graph drawn twice (same layout, so the eye can diff the pictures): problem nodes
-       red in "before", new seams green in "after", unchanged nodes slate. Each graph headed by a claim
-       the picture proves. Colors per assets/diagram-style.md ("Before/after highlight colors").
-       Give arrow markers a unique id per <svg> — ids are global across the document.
-       Signature diffs (.sig blocks below) can share the slide, or take their own slide when the
-       interface change is the story. Signatures only — never function bodies. -->
+       These slides ABSORB their work items: fold that change's evidence in below the graphs rather than
+       adding a separate work-item slide. Same dependency graph drawn twice (same layout, so the eye can
+       diff the pictures): problem nodes red in "before", new seams green in "after", unchanged neutral.
+       Each graph headed by a claim the picture proves. Colors per assets/diagram-style.md — CSS variables,
+       so the diagram follows the deck theme. Give arrow markers a unique id per <svg> — ids are global
+       across the document. Signature diffs (.sig blocks below): signatures only — never function bodies. -->
   <section class="slide" data-title="REPLACE: architectural change">
-    <h2>REPLACE: short name of the structural change</h2>
+    <h2>REPLACE: short name of the structural change <span class="badge pass">SHIPPED</span></h2>
     <p class="commit">REPLACE: abc1234 · commit subject line</p>
+    <p class="lede">REPLACE: one plain-English sentence — what behaves differently now and why it matters.</p>
 
-    <h3>Before: REPLACE — claim the picture proves, e.g. "settings.mode read in six places"</h3>
+    <h3>Before — REPLACE: claim the picture proves, e.g. "settings.mode read in six places"</h3>
     <div class="diagram">
-      <svg width="640" height="140" viewBox="0 0 640 140" font-family="ui-monospace, Menlo, monospace">
+      <svg width="640" height="132" viewBox="0 0 640 132" font-family="ui-monospace, Menlo, monospace">
         <defs>
           <marker id="arr-before" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+            <polygon points="0 0, 10 3.5, 0 7" fill="var(--muted)"/>
           </marker>
         </defs>
-        <rect x="0" y="0" width="640" height="140" rx="8" fill="#020617"/>
-        <g stroke="#64748b" stroke-width="1.5">
-          <line x1="180" y1="70" x2="238" y2="70" marker-end="url(#arr-before)"/>
-          <line x1="410" y1="70" x2="468" y2="70" marker-end="url(#arr-before)"/>
+        <g stroke="var(--muted)" stroke-width="1.4">
+          <line x1="180" y1="66" x2="238" y2="66" marker-end="url(#arr-before)"/>
+          <line x1="410" y1="66" x2="468" y2="66" marker-end="url(#arr-before)"/>
         </g>
         <g>
-          <rect x="10" y="44" width="170" height="52" rx="6" fill="#0f172a"/>
-          <rect x="10" y="44" width="170" height="52" rx="6" fill="rgba(51,65,85,0.35)" stroke="#64748b" stroke-width="1.5"/>
-          <rect x="240" y="44" width="170" height="52" rx="6" fill="#0f172a"/>
-          <rect x="240" y="44" width="170" height="52" rx="6" fill="rgba(127,29,29,0.4)" stroke="#f87171" stroke-width="1.5"/>
-          <rect x="470" y="44" width="160" height="52" rx="6" fill="#0f172a"/>
-          <rect x="470" y="44" width="160" height="52" rx="6" fill="rgba(51,65,85,0.35)" stroke="#64748b" stroke-width="1.5"/>
+          <rect x="10" y="40" width="170" height="52" rx="6" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"/>
+          <rect x="240" y="40" width="170" height="52" rx="6" fill="var(--fail-bg)" stroke="var(--fail)" stroke-width="1.4"/>
+          <rect x="470" y="40" width="160" height="52" rx="6" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"/>
         </g>
         <g text-anchor="middle">
-          <text x="95" y="66" fill="white" font-size="12" font-weight="600">REPLACE: caller</text>
-          <text x="95" y="83" fill="#94a3b8" font-size="9">unchanged</text>
-          <text x="325" y="66" fill="#fca5a5" font-size="12" font-weight="600">REPLACE: problem</text>
-          <text x="325" y="83" fill="#94a3b8" font-size="9">e.g. settings.mode</text>
-          <text x="550" y="66" fill="white" font-size="12" font-weight="600">REPLACE: reader</text>
-          <text x="550" y="83" fill="#94a3b8" font-size="9">unchanged</text>
+          <text x="95" y="61" fill="var(--ink)" font-size="12" font-weight="600">REPLACE: caller</text>
+          <text x="95" y="78" fill="var(--muted)" font-size="9">unchanged</text>
+          <text x="325" y="61" fill="var(--fail)" font-size="12" font-weight="600">REPLACE: problem</text>
+          <text x="325" y="78" fill="var(--muted)" font-size="9">e.g. settings.mode</text>
+          <text x="550" y="61" fill="var(--ink)" font-size="12" font-weight="600">REPLACE: reader</text>
+          <text x="550" y="78" fill="var(--muted)" font-size="9">unchanged</text>
         </g>
       </svg>
     </div>
 
-    <h3>After: REPLACE — e.g. "two facades, zero mode reads anywhere"</h3>
+    <h3>After — REPLACE: e.g. "two facades, zero mode reads anywhere"</h3>
     <div class="diagram">
-      <svg width="640" height="200" viewBox="0 0 640 200" font-family="ui-monospace, Menlo, monospace">
+      <svg width="640" height="192" viewBox="0 0 640 192" font-family="ui-monospace, Menlo, monospace">
         <defs>
           <marker id="arr-after" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+            <polygon points="0 0, 10 3.5, 0 7" fill="var(--muted)"/>
           </marker>
         </defs>
-        <rect x="0" y="0" width="640" height="200" rx="8" fill="#020617"/>
-        <g stroke="#64748b" stroke-width="1.5">
-          <line x1="210" y1="76" x2="290" y2="116" marker-end="url(#arr-after)"/>
-          <line x1="430" y1="76" x2="350" y2="116" marker-end="url(#arr-after)"/>
+        <g stroke="var(--muted)" stroke-width="1.4">
+          <line x1="210" y1="72" x2="290" y2="112" marker-end="url(#arr-after)"/>
+          <line x1="430" y1="72" x2="350" y2="112" marker-end="url(#arr-after)"/>
         </g>
         <g>
-          <rect x="120" y="24" width="180" height="52" rx="6" fill="#0f172a"/>
-          <rect x="120" y="24" width="180" height="52" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
-          <rect x="340" y="24" width="180" height="52" rx="6" fill="#0f172a"/>
-          <rect x="340" y="24" width="180" height="52" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
-          <rect x="230" y="120" width="180" height="52" rx="6" fill="#0f172a"/>
-          <rect x="230" y="120" width="180" height="52" rx="6" fill="rgba(51,65,85,0.35)" stroke="#64748b" stroke-width="1.5"/>
+          <rect x="120" y="20" width="180" height="52" rx="6" fill="var(--pass-bg)" stroke="var(--pass)" stroke-width="1.4"/>
+          <rect x="340" y="20" width="180" height="52" rx="6" fill="var(--pass-bg)" stroke="var(--pass)" stroke-width="1.4"/>
+          <rect x="230" y="116" width="180" height="52" rx="6" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"/>
         </g>
         <g text-anchor="middle">
-          <text x="210" y="46" fill="#6ee7b7" font-size="12" font-weight="600">REPLACE: new seam A</text>
-          <text x="210" y="63" fill="#94a3b8" font-size="9">e.g. AnimatedShell</text>
-          <text x="430" y="46" fill="#6ee7b7" font-size="12" font-weight="600">REPLACE: new seam B</text>
-          <text x="430" y="63" fill="#94a3b8" font-size="9">e.g. AnimatedAgent</text>
-          <text x="320" y="142" fill="white" font-size="12" font-weight="600">REPLACE: engine</text>
-          <text x="320" y="159" fill="#94a3b8" font-size="9">mode-agnostic, unchanged API</text>
+          <text x="210" y="42" fill="var(--pass)" font-size="12" font-weight="600">REPLACE: new seam A</text>
+          <text x="210" y="59" fill="var(--muted)" font-size="9">e.g. AnimatedShell</text>
+          <text x="430" y="42" fill="var(--pass)" font-size="12" font-weight="600">REPLACE: new seam B</text>
+          <text x="430" y="59" fill="var(--muted)" font-size="9">e.g. AnimatedAgent</text>
+          <text x="320" y="138" fill="var(--ink)" font-size="12" font-weight="600">REPLACE: engine</text>
+          <text x="320" y="155" fill="var(--muted)" font-size="9">mode-agnostic, unchanged API</text>
         </g>
       </svg>
     </div>
@@ -299,9 +282,14 @@
   hints?: readonly string[]</span><span class="add">  content: ReplaceContent</span><span class="ctx">  theme: Theme
 }</span></pre>
     </div>
+
+    <h3>Evidence — REPLACE: what this capture proves</h3>
+    <div class="term"><span class="cmd">$ REPLACE: real command</span>
+REPLACE: real captured output — this slide absorbs its work item's evidence</div>
   </section>
 
-  <!-- Slide 5+: one per work item. Plain-language claim on top, evidence directly below. -->
+  <!-- Work-item slides: one per change NOT covered by an architecture slide above.
+       Plain-language claim on top, evidence directly below. -->
   <section class="slide" data-title="REPLACE: work item">
     <h2>REPLACE: work item <span class="badge pass">SHIPPED</span></h2>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now (before → after) and why it matters. Key refs: <code>path/to/file.py:42</code></p>

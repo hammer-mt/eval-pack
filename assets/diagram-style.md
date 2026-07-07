@@ -8,88 +8,67 @@ Eval packs use **inline SVG only** — no HTML shell, no Google Fonts (use a gen
 `monospace` stack), no export toolbar, no CDN scripts. Those would break the pack's
 one-file offline rule. (Provenance: see the Credit section of the repo README.)
 
-## Canvas
+## Theme-adaptive, not dark
 
-- Background: `#020617` (slate-950) rect with `rx="8"`, covering the whole viewBox.
-  Keep it even though the deck has its own theme — the dark panel makes the diagram
-  self-contained on both light and dark deck themes.
-- Subtle grid pattern on top of the background:
+Diagrams inherit the deck's theme instead of carrying their own dark canvas. Inline
+SVG lives in the document, so CSS variables cascade into it — use `var(--…)` for
+every fill and stroke and the diagram automatically matches both light and dark
+deck themes:
 
-```svg
-<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
-</pattern>
-```
-
+- **No background rect and no grid pattern.** The template's `<div class="diagram">`
+  panel supplies the surface.
 - Typography: `font-family="ui-monospace, Menlo, monospace"` on the root `<svg>`.
-  Sizes: 12px component names, 9px sublabels, 8px annotations.
-- Wrap each `<svg>` in the template's `<div class="diagram">` panel.
+  Sizes: 12px component names, 9px sublabels, ~10px annotations.
+- Keep diagrams inside the slide's content width (viewBox width ≤ ~760).
 
-## Component colors (semantic, by type)
+## Colors encode the change, not the tech stack
 
-| Component type | Fill (rgba) | Stroke |
-|---------------|-------------|--------|
-| Frontend | `rgba(8, 51, 68, 0.4)` | `#22d3ee` (cyan-400) |
-| Backend | `rgba(6, 78, 59, 0.4)` | `#34d399` (emerald-400) |
-| Database | `rgba(76, 29, 149, 0.4)` | `#a78bfa` (violet-400) |
-| Cloud / infra | `rgba(120, 53, 15, 0.3)` | `#fbbf24` (amber-400) |
-| Security | `rgba(136, 19, 55, 0.4)` | `#fb7185` (rose-400) |
-| Message bus | `rgba(251, 146, 60, 0.3)` | `#fb923c` (orange-400) |
-| External / generic | `rgba(30, 41, 59, 0.5)` | `#94a3b8` (slate-400) |
+Use three roles. The reviewer's eye should land on red in a *before* graph and
+green in an *after* graph:
 
-## Before/after highlight colors (semantic, by change)
+| Role | Fill | Stroke | Label fill |
+|------|------|--------|------------|
+| Problem node (before) | `var(--fail-bg)` | `var(--fail)` | `var(--fail)` |
+| New seam (after) | `var(--pass-bg)` | `var(--pass)` | `var(--pass)` |
+| Unchanged | `var(--bg)` | `var(--line)` | `var(--ink)` |
 
-In architecture before/after slides, color encodes **the change**, not the component
-type — the reviewer's eye should land on red in the *before* graph and green in the
-*after* graph:
-
-| Role | Fill (rgba) | Stroke | Label color |
-|------|-------------|--------|-------------|
-| Problem node (before) | `rgba(127, 29, 29, 0.4)` | `#f87171` (red-400) | `#fca5a5` |
-| New seam (after) | `rgba(6, 78, 59, 0.4)` | `#34d399` (emerald-400) | `#6ee7b7` |
-| Unchanged | `rgba(51, 65, 85, 0.35)` | `#64748b` (slate-500) | `white` |
+Sublabels are always `var(--muted)`. If a diagram genuinely needs more distinctions,
+`var(--warn*)` and `var(--accent)` are available — but if you're reaching for a
+fourth color, the diagram is probably doing too much.
 
 Draw the same graph twice with the same layout where possible, so the reviewer can
-diff the two pictures by eye.
+diff the two pictures by eye. Collapse parallel same-role nodes into one box with a
+`·`-separated label (`chat_v1 · chat_streaming · resample`) — fewer boxes beats
+more precision.
 
-## Boxes, arrows, z-order
+## Boxes and arrows
 
-Component boxes are rounded rects (`rx="6"`) with 1.5px stroke and semi-transparent
-fill:
+Component boxes are rounded rects (`rx="6"`) with 1.4px stroke:
 
 ```svg
-<rect x="X" y="Y" width="W" height="H" rx="6" fill="FILL" stroke="STROKE" stroke-width="1.5"/>
-<text x="CENTER_X" y="Y+20" fill="white" font-size="11" font-weight="600" text-anchor="middle">LABEL</text>
-<text x="CENTER_X" y="Y+36" fill="#94a3b8" font-size="9" text-anchor="middle">sublabel</text>
+<rect x="X" y="Y" width="W" height="H" rx="6" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"/>
+<text x="CENTER_X" y="Y+21" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle">LABEL</text>
+<text x="CENTER_X" y="Y+38" fill="var(--muted)" font-size="9" text-anchor="middle">sublabel</text>
 ```
 
-Arrowheads via SVG marker (give the marker a unique id per `<svg>` — ids are global
-across the whole HTML document, and a pack has several diagrams):
+Arrows are `var(--muted)`, drawn **before** the boxes (SVG paints in document order,
+and fills are opaque, so boxes cover arrow ends cleanly). Dashed
+(`stroke-dasharray="4,4"`) means indirect — deferred, fallback, "binds to".
+Arrowheads via marker; give the marker a **unique id per `<svg>`** — ids are global
+across the whole HTML document, and a pack has several diagrams:
 
 ```svg
 <marker id="arrow-UNIQUE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-  <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+  <polygon points="0 0, 10 3.5, 0 7" fill="var(--muted)"/>
 </marker>
 ```
 
-- **Arrows first.** Draw connection lines right after the background/grid so boxes
-  painted later cover them. SVG paints in document order.
-- **Mask arrows behind transparent fills.** Semi-transparent fills let arrows show
-  through; under each styled rect, draw an opaque rect first:
-
-```svg
-<rect x="X" y="Y" width="W" height="H" rx="6" fill="#0f172a"/>
-<rect x="X" y="Y" width="W" height="H" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
-```
-
-- Dashed lines mean indirect relationships: auth/security flows in rose `#fb7185`;
-  grouping boundaries with `stroke-dasharray="4,4"` (security groups, rose) or
-  `stroke-dasharray="8,4"` (regions/clusters, amber, `rx="12"`).
+After drawing, sanity-check every sublabel fits its box: ~5.4px per character at
+9px monospace. Shorten the label rather than widening the diagram.
 
 ## Spacing and legends
 
-- Standard component height 60px (80–120px for large components); **minimum 40px
-  vertical gap** between stacked components. Inline connectors (message buses) go in
-  the gap, never overlapping a box.
-- Legends go **outside** every boundary box: find the lowest boundary edge, place the
-  legend at least 20px below it, and extend the viewBox height to fit.
+- Component height ~44–52px; **minimum 28px vertical gap** between rows of boxes.
+- Prefer labeling roles directly on the boxes over a legend. If a legend is
+  unavoidable, place it below everything with at least 20px clearance and extend
+  the viewBox to fit.

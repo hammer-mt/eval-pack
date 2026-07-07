@@ -10,7 +10,7 @@ The evaluation-pack concept comes from Lucas Meijer's talk **["A love letter to 
 
 The architecture before/after slides come from **[Delba de Oliveira's workflow](https://x.com/delba_oliveira/status/2073467304491233543)**: "You don't need to read code anymore. Read architectural changes first, then code, if necessary." Her caveats carry over — this works best when the agent has strong ways to verify its work, and when architectural decisions are iterated on upfront, before code gets written.
 
-The diagram design system (`assets/diagram-style.md`) is distilled from the **architecture-diagram** skill (v1.1, MIT License) by [Cocoon AI](mailto:hello@cocoon-ai.com), adapted for the pack's inline-SVG offline rule so this repo is fully self-contained.
+The diagram design system (`assets/diagram-style.md`) is distilled from the **architecture-diagram** skill (v1.1, MIT License) by [Cocoon AI](mailto:hello@cocoon-ai.com) — its arrow z-order, spacing, and legend rules — adapted for the pack's inline-SVG offline rule and restyled to be theme-adaptive (diagrams inherit the deck's light/dark theme via CSS variables) so this repo is fully self-contained.
 
 ## Install
 
