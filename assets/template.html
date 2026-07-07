@@ -10,7 +10,7 @@
     --line: #e2e5ea; --accent: #2563eb; --accent-ink: #ffffff;
     --term-bg: #14161a; --term-ink: #d6e0ea;
     --pass: #16803c; --pass-bg: #e7f6ec; --fail: #b91c1c; --fail-bg: #fdeaea;
-    --warn: #92600a; --warn-bg: #fdf3dc;
+    --warn: #92600a; --warn-bg: #fdf3dc; --new: #4f46e5; --new-bg: #e9e9fd;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -18,7 +18,7 @@
       --line: #2a2f38; --accent: #5b8def; --accent-ink: #0d1117;
       --term-bg: #0b0d10; --term-ink: #cdd8e3;
       --pass: #4ade80; --pass-bg: #12351f; --fail: #f87171; --fail-bg: #3a1414;
-      --warn: #fbbf24; --warn-bg: #3a2c0a;
+      --warn: #fbbf24; --warn-bg: #3a2c0a; --new: #a5b4fc; --new-bg: #232450;
     }
   }
   * { box-sizing: border-box; }
@@ -81,6 +81,21 @@
   .badge.pass { color: var(--pass); background: var(--pass-bg); }
   .badge.fail { color: var(--fail); background: var(--fail-bg); }
   .badge.warn { color: var(--warn); background: var(--warn-bg); }
+  .badge.new { color: var(--new); background: var(--new-bg); }
+  .badge.changed { color: var(--warn); background: var(--warn-bg); }
+  .commit { font: 13px ui-monospace, Menlo, monospace; color: var(--muted); margin: 0 0 22px; }
+
+  /* ---- Signature diffs (interfaces & function signatures, never bodies) ---- */
+  .sig { border: 1px solid var(--line); border-radius: 10px; margin: 14px 0; background: var(--panel); overflow: hidden; }
+  .sig-head {
+    display: flex; gap: 10px; align-items: center; padding: 8px 14px;
+    border-bottom: 1px solid var(--line); font: 14px ui-monospace, Menlo, monospace;
+  }
+  .sig-head .file { color: var(--muted); font-size: 12px; }
+  .sig pre { margin: 0; padding: 10px 0; overflow-x: auto; font: 13px/1.6 ui-monospace, Menlo, monospace; }
+  .sig pre > span, .sig .ctx { display: block; padding: 0 14px; }
+  .sig .add { background: var(--pass-bg); box-shadow: inset 3px 0 0 var(--pass); }
+  .sig .del { background: var(--fail-bg); box-shadow: inset 3px 0 0 var(--fail); }
   .callout {
     border: 1px solid var(--line); border-left: 4px solid var(--accent);
     background: var(--panel); border-radius: 8px; padding: 12px 16px; margin: 14px 0;
@@ -154,9 +169,9 @@
     <p class="lede">REPLACE: how the pieces connect / how data flows through the change.</p>
     <div class="diagram">
       <!-- Example diagram: replace boxes and labels with real names.
-           Styled per the architecture-diagram skill (~/.claude/skills/architecture-diagram/SKILL.md):
+           Styled per assets/diagram-style.md (shipped with this skill):
            semantic component colors, arrows drawn before boxes, opaque mask rects under
-           semi-transparent fills. SVG only — no external fonts or scripts from that skill.
+           semi-transparent fills. Inline SVG only — no external fonts or scripts.
            Keep the dark background rect: it makes the diagram self-contained on both deck themes. -->
       <svg width="640" height="180" viewBox="0 0 640 180" font-family="ui-monospace, Menlo, monospace">
         <defs>
@@ -195,7 +210,98 @@
     </div>
   </section>
 
-  <!-- Slide 4+: one per work item. Plain-language claim on top, evidence directly below. -->
+  <!-- Architecture before/after: one slide per structural change (refactor, extraction, new seam),
+       placed before the code-level slides — the reviewer reads architecture first, code only if necessary.
+       Same dependency graph drawn twice (same layout, so the eye can diff the pictures): problem nodes
+       red in "before", new seams green in "after", unchanged nodes slate. Each graph headed by a claim
+       the picture proves. Colors per assets/diagram-style.md ("Before/after highlight colors").
+       Give arrow markers a unique id per <svg> — ids are global across the document.
+       Signature diffs (.sig blocks below) can share the slide, or take their own slide when the
+       interface change is the story. Signatures only — never function bodies. -->
+  <section class="slide" data-title="REPLACE: architectural change">
+    <h2>REPLACE: short name of the structural change</h2>
+    <p class="commit">REPLACE: abc1234 · commit subject line</p>
+
+    <h3>Before: REPLACE — claim the picture proves, e.g. "settings.mode read in six places"</h3>
+    <div class="diagram">
+      <svg width="640" height="140" viewBox="0 0 640 140" font-family="ui-monospace, Menlo, monospace">
+        <defs>
+          <marker id="arr-before" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+          </marker>
+        </defs>
+        <rect x="0" y="0" width="640" height="140" rx="8" fill="#020617"/>
+        <g stroke="#64748b" stroke-width="1.5">
+          <line x1="180" y1="70" x2="238" y2="70" marker-end="url(#arr-before)"/>
+          <line x1="410" y1="70" x2="468" y2="70" marker-end="url(#arr-before)"/>
+        </g>
+        <g>
+          <rect x="10" y="44" width="170" height="52" rx="6" fill="#0f172a"/>
+          <rect x="10" y="44" width="170" height="52" rx="6" fill="rgba(51,65,85,0.35)" stroke="#64748b" stroke-width="1.5"/>
+          <rect x="240" y="44" width="170" height="52" rx="6" fill="#0f172a"/>
+          <rect x="240" y="44" width="170" height="52" rx="6" fill="rgba(127,29,29,0.4)" stroke="#f87171" stroke-width="1.5"/>
+          <rect x="470" y="44" width="160" height="52" rx="6" fill="#0f172a"/>
+          <rect x="470" y="44" width="160" height="52" rx="6" fill="rgba(51,65,85,0.35)" stroke="#64748b" stroke-width="1.5"/>
+        </g>
+        <g text-anchor="middle">
+          <text x="95" y="66" fill="white" font-size="12" font-weight="600">REPLACE: caller</text>
+          <text x="95" y="83" fill="#94a3b8" font-size="9">unchanged</text>
+          <text x="325" y="66" fill="#fca5a5" font-size="12" font-weight="600">REPLACE: problem</text>
+          <text x="325" y="83" fill="#94a3b8" font-size="9">e.g. settings.mode</text>
+          <text x="550" y="66" fill="white" font-size="12" font-weight="600">REPLACE: reader</text>
+          <text x="550" y="83" fill="#94a3b8" font-size="9">unchanged</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>After: REPLACE — e.g. "two facades, zero mode reads anywhere"</h3>
+    <div class="diagram">
+      <svg width="640" height="200" viewBox="0 0 640 200" font-family="ui-monospace, Menlo, monospace">
+        <defs>
+          <marker id="arr-after" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+          </marker>
+        </defs>
+        <rect x="0" y="0" width="640" height="200" rx="8" fill="#020617"/>
+        <g stroke="#64748b" stroke-width="1.5">
+          <line x1="210" y1="76" x2="290" y2="116" marker-end="url(#arr-after)"/>
+          <line x1="430" y1="76" x2="350" y2="116" marker-end="url(#arr-after)"/>
+        </g>
+        <g>
+          <rect x="120" y="24" width="180" height="52" rx="6" fill="#0f172a"/>
+          <rect x="120" y="24" width="180" height="52" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <rect x="340" y="24" width="180" height="52" rx="6" fill="#0f172a"/>
+          <rect x="340" y="24" width="180" height="52" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <rect x="230" y="120" width="180" height="52" rx="6" fill="#0f172a"/>
+          <rect x="230" y="120" width="180" height="52" rx="6" fill="rgba(51,65,85,0.35)" stroke="#64748b" stroke-width="1.5"/>
+        </g>
+        <g text-anchor="middle">
+          <text x="210" y="46" fill="#6ee7b7" font-size="12" font-weight="600">REPLACE: new seam A</text>
+          <text x="210" y="63" fill="#94a3b8" font-size="9">e.g. AnimatedShell</text>
+          <text x="430" y="46" fill="#6ee7b7" font-size="12" font-weight="600">REPLACE: new seam B</text>
+          <text x="430" y="63" fill="#94a3b8" font-size="9">e.g. AnimatedAgent</text>
+          <text x="320" y="142" fill="white" font-size="12" font-weight="600">REPLACE: engine</text>
+          <text x="320" y="159" fill="#94a3b8" font-size="9">mode-agnostic, unchanged API</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>Interfaces and signatures, rendered as diffs</h3>
+    <div class="sig">
+      <div class="sig-head"><span class="badge new">NEW</span> <code>REPLACE: TypeOrFnName</code> <span class="file">· path/to/types.ts</span></div>
+      <pre><span class="add">export type ReplaceContent =
+  | { kind: 'mode'; mode: PermissionMode | null }
+  | { kind: 'hints'; segments: readonly string[] }</span></pre>
+    </div>
+    <div class="sig">
+      <div class="sig-head"><span class="badge changed">CHANGED</span> <code>REPLACE: TypeOrFnName</code> <span class="file">· path/to/types.ts</span></div>
+      <pre><span class="ctx">export type ReplaceContext = {</span><span class="del">  mode: PermissionMode | null
+  hints?: readonly string[]</span><span class="add">  content: ReplaceContent</span><span class="ctx">  theme: Theme
+}</span></pre>
+    </div>
+  </section>
+
+  <!-- Slide 5+: one per work item. Plain-language claim on top, evidence directly below. -->
   <section class="slide" data-title="REPLACE: work item">
     <h2>REPLACE: work item <span class="badge pass">SHIPPED</span></h2>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now (before → after) and why it matters. Key refs: <code>path/to/file.py:42</code></p>
