@@ -8,7 +8,8 @@
   :root {
     --bg: #f6f7f9; --panel: #ffffff; --ink: #1a1d21; --muted: #6b7280;
     --line: #e2e5ea; --accent: #2563eb; --accent-ink: #ffffff;
-    --term-bg: #14161a; --term-ink: #d6e0ea;
+    --term-bg: #f8f9fb; --term-ink: #24292f;
+    --term-cmd: #0550ae; --term-ok: #116329; --term-err: #a40e26;
     --pass: #16803c; --pass-bg: #e7f6ec; --fail: #b91c1c; --fail-bg: #fdeaea;
     --warn: #92600a; --warn-bg: #fdf3dc; --new: #4f46e5; --new-bg: #e9e9fd;
   }
@@ -17,6 +18,7 @@
       --bg: #101216; --panel: #181b21; --ink: #e8eaee; --muted: #9aa3af;
       --line: #2a2f38; --accent: #5b8def; --accent-ink: #0d1117;
       --term-bg: #0b0d10; --term-ink: #cdd8e3;
+      --term-cmd: #8ab4f8; --term-ok: #69db7c; --term-err: #ff8a80;
       --pass: #4ade80; --pass-bg: #12351f; --fail: #f87171; --fail-bg: #3a1414;
       --warn: #fbbf24; --warn-bg: #3a2c0a; --new: #a5b4fc; --new-bg: #232450;
     }
@@ -64,12 +66,13 @@
   /* ---- Evidence components ---- */
   .term {
     background: var(--term-bg); color: var(--term-ink); border-radius: 10px;
+    border: 1px solid var(--line);
     padding: 14px 16px; overflow-x: auto; font: 13px/1.5 ui-monospace, Menlo, monospace;
     white-space: pre; margin: 12px 0;
   }
-  .term .cmd { color: #8ab4f8; }
-  .term .err { color: #ff8a80; }
-  .term .ok { color: #69db7c; }
+  .term .cmd { color: var(--term-cmd); font-weight: 600; }
+  .term .err { color: var(--term-err); font-weight: 600; }
+  .term .ok { color: var(--term-ok); font-weight: 600; }
   code { font: .9em ui-monospace, Menlo, monospace; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
   .shot { margin: 14px 0; }
   .shot img { max-width: 100%; border: 1px solid var(--line); border-radius: 10px; display: block; }
@@ -103,8 +106,35 @@
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
   table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
-  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+  td:first-child { font-weight: 600; }
+
+  /* Before → after change cards: one card per behavior, red "was" panel → green "now" panel.
+     Same visual grammar as the .sig diff bars: red bar = old, green bar = new. */
+  .change { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 12px 16px; margin: 12px 0; }
+  .c-title { font-weight: 600; margin-bottom: 8px; }
+  .c-grid { display: grid; grid-template-columns: 1fr 26px 1fr; gap: 10px; align-items: stretch; }
+  .was, .now { border-radius: 8px; padding: 8px 12px 9px; font-size: 14px; }
+  .was { background: var(--fail-bg); box-shadow: inset 3px 0 0 var(--fail); }
+  .now { background: var(--pass-bg); box-shadow: inset 3px 0 0 var(--pass); }
+  .k { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; margin-bottom: 3px; }
+  .was .k { color: var(--fail); }
+  .now .k { color: var(--pass); }
+  .c-arr { align-self: center; color: var(--muted); text-align: center; font-size: 16px; }
+  @media (max-width: 900px) { .c-grid { grid-template-columns: 1fr; } .c-arr { display: none; } }
+  .badge.neutral { color: var(--muted); background: var(--bg); border: 1px solid var(--line); }
+  h3 .badge { vertical-align: 2px; margin-right: 6px; }
+
+  /* Decision cards: one-way doors (hard to reverse) get the amber edge and come first. */
+  .decision { border: 1px solid var(--line); border-left: 4px solid var(--warn);
+    border-radius: 8px; background: var(--panel); padding: 12px 16px; margin: 12px 0; }
+  .decision.two { border-left-color: var(--line); }
+  .d-head { display: flex; gap: 10px; align-items: center; font-weight: 600; margin-bottom: 4px; }
+  .d-body { font-size: 14px; }
+  .d-body .alt { color: var(--muted); }
+  .badge.door1 { color: var(--warn); background: var(--warn-bg); }
+  .badge.door2 { color: var(--muted); background: var(--bg); border: 1px solid var(--line); }
   .diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin: 14px 0; overflow-x: auto; }
   .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
@@ -142,7 +172,7 @@
   <!-- Slide 1: Summary. One row per work item with a verdict badge. -->
   <section class="slide" data-title="Summary">
     <h2>Summary</h2>
-    <p class="lede">REPLACE: one plain-language sentence — what was asked and what was delivered.</p>
+    <p class="lede"><strong>Bottom line: REPLACE — the one-sentence verdict a reviewer could act on</strong> (e.g. "ship it — everything verified live except X"). REPLACE: what was asked and what was delivered.</p>
     <table>
       <tr><th>What changed (before → after)</th><th>Verdict</th><th>Evidence</th></tr>
       <tr><td>REPLACE: behavior change one, e.g. "retired-plan subscribers now keep their plan instead of being dropped to free"</td><td><span class="badge pass">SHIPPED</span></td><td>REPLACE: slide 4</td></tr>
@@ -151,16 +181,49 @@
     <div class="callout">REPLACE: anything found &amp; fixed during evidence capture, or the single most important thing the reviewer should know.</div>
   </section>
 
-  <!-- Slide 2: What to check. The reviewer's priority list, plain language, ordered by risk. -->
-  <section class="slide" data-title="What to check">
-    <h2>What to check</h2>
-    <p class="lede">REPLACE: one sentence on where the risk in this change is concentrated.</p>
-    <table>
-      <tr><th>Look at</th><th>Why it matters</th><th>What wrong looks like</th></tr>
-      <tr><td>REPLACE: judgment call or risky spot</td><td>REPLACE: who/what is affected if it's wrong</td><td>REPLACE: how the reviewer would recognize a problem</td></tr>
-      <tr><td>REPLACE: change with wide blast radius</td><td>REPLACE</td><td>REPLACE</td></tr>
-      <tr><td>REPLACE: weakest evidence in this pack</td><td>REPLACE</td><td>REPLACE</td></tr>
-    </table>
+  <!-- Slide 2: What changed. One card per user-visible behavior: title, red BEFORE panel → green
+       AFTER panel. This is the pyramid's second layer: a reviewer who reads only Summary + this
+       slide should already have correct beliefs about the change. -->
+  <section class="slide" data-title="What changed">
+    <h2>What changed</h2>
+    <p class="lede">REPLACE: how the before side was captured (e.g. live against master) — every card states a behavior, not an implementation.</p>
+    <div class="change">
+      <div class="c-title">REPLACE: behavior, e.g. "Your message budget"</div>
+      <div class="c-grid">
+        <div class="was"><span class="k">BEFORE</span>REPLACE: old behavior</div>
+        <div class="c-arr">→</div>
+        <div class="now"><span class="k">AFTER</span>REPLACE: new behavior</div>
+      </div>
+    </div>
+    <div class="change">
+      <div class="c-title">REPLACE: behavior</div>
+      <div class="c-grid">
+        <div class="was"><span class="k">BEFORE</span>REPLACE</div>
+        <div class="c-arr">→</div>
+        <div class="now"><span class="k">AFTER</span>REPLACE</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Decisions. Every judgment call made without asking, ordered one-way doors first.
+       One-way door = hard to reverse once shipped (pricing/data/public API). Two-way door = cheap
+       to change later (a constant, an internal shape). Chosen vs alternative, the tradeoff, and
+       for two-way doors how to reverse. Reviewer should be able to say "understood and happy"
+       (or not) from this slide alone. -->
+  <section class="slide" data-title="Decisions">
+    <h2>Decisions you're signing off on</h2>
+    <p class="lede">REPLACE: one sentence on where the judgment (not the code) is concentrated. One-way doors first.</p>
+
+    <div class="decision">
+      <div class="d-head"><span class="badge door1">ONE-WAY DOOR</span> REPLACE: the decision, stated as its consequence</div>
+      <div class="d-body">Chose <strong>REPLACE: what</strong> over <span class="alt">REPLACE: the alternative</span>.
+        Tradeoff: REPLACE: what we gained vs what we gave up. Why it's hard to reverse: REPLACE.</div>
+    </div>
+    <div class="decision two">
+      <div class="d-head"><span class="badge door2">TWO-WAY DOOR</span> REPLACE: the decision</div>
+      <div class="d-body">Chose <strong>REPLACE</strong> over <span class="alt">REPLACE</span>.
+        Tradeoff: REPLACE. To reverse: REPLACE: the one-line change that undoes it.</div>
+    </div>
   </section>
 
   <!-- Slide 3: Map. Inline SVG diagram with REAL file/function names. -->
@@ -213,7 +276,7 @@
     <p class="commit">REPLACE: abc1234 · commit subject line</p>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now and why it matters.</p>
 
-    <h3>Before — REPLACE: claim the picture proves, e.g. "settings.mode read in six places"</h3>
+    <h3><span class="badge fail">BEFORE</span> REPLACE: claim the picture proves, e.g. "settings.mode read in six places"</h3>
     <div class="diagram">
       <svg width="640" height="132" viewBox="0 0 640 132" font-family="ui-monospace, Menlo, monospace">
         <defs>
@@ -241,7 +304,7 @@
       </svg>
     </div>
 
-    <h3>After — REPLACE: e.g. "two facades, zero mode reads anywhere"</h3>
+    <h3><span class="badge pass">AFTER</span> REPLACE: e.g. "two facades, zero mode reads anywhere"</h3>
     <div class="diagram">
       <svg width="640" height="192" viewBox="0 0 640 192" font-family="ui-monospace, Menlo, monospace">
         <defs>
@@ -283,7 +346,7 @@
 }</span></pre>
     </div>
 
-    <h3>Evidence — REPLACE: what this capture proves</h3>
+    <h3><span class="badge neutral">EVIDENCE</span> REPLACE: what this capture proves</h3>
     <div class="term"><span class="cmd">$ REPLACE: real command</span>
 REPLACE: real captured output — this slide absorbs its work item's evidence</div>
   </section>
@@ -293,7 +356,7 @@ REPLACE: real captured output — this slide absorbs its work item's evidence</d
   <section class="slide" data-title="REPLACE: work item">
     <h2>REPLACE: work item <span class="badge pass">SHIPPED</span></h2>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now (before → after) and why it matters. Key refs: <code>path/to/file.py:42</code></p>
-    <h3>Evidence</h3>
+    <h3><span class="badge neutral">EVIDENCE</span> REPLACE: what this capture proves</h3>
     <div class="term"><span class="cmd">$ REPLACE: real command</span>
 REPLACE: real captured output — trimmed, never altered</div>
     <figure class="shot">
