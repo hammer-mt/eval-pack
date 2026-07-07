@@ -62,8 +62,4 @@ The pack is a review instrument, not a sales brochure. Failing tests appear in r
 
 ## Credit
 
-The evaluation-pack concept comes from Lucas Meijer's talk ["A love letter to Pi"](https://www.youtube.com/watch?v=fdbXNWkpPMY) (Build Monumental), about working with Mario Zechner's [Pi coding agent](https://github.com/badlogic/pi-mono) — the agent presents a curated evidence package so a human can review an hour of agent work in a few minutes.
-
-The architecture before/after slides come from [Delba de Oliveira's workflow](https://x.com/delba_oliveira/status/2073467304491233543): "You don't need to read code anymore. Read architectural changes first, then code, if necessary." Her caveats apply to packs too — this works best when the agent has strong ways to verify its work, and when architectural decisions are iterated on upfront, before code gets written.
-
-The diagram design system in `assets/diagram-style.md` is distilled from the **architecture-diagram** skill (v1.1, MIT License) by [Cocoon AI](mailto:hello@cocoon-ai.com), adapted for the pack's inline-SVG offline rule.
+See the Credit section of this repo's `README.md` for the ideas and material this skill builds on.

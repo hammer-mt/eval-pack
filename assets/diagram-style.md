@@ -4,10 +4,9 @@ The SVG design system for every diagram in an eval pack: the Map slide and the
 architecture before/after slides. Follow it so diagrams across packs read as one
 system.
 
-> Distilled from the **architecture-diagram** skill (v1.1, MIT License, authored by
-> [Cocoon AI](mailto:hello@cocoon-ai.com)), adapted for eval packs: **inline SVG only** —
-> no HTML shell, no Google Fonts (use a generic `monospace` stack), no export toolbar,
-> no CDN scripts. Those would break the pack's one-file offline rule.
+Eval packs use **inline SVG only** — no HTML shell, no Google Fonts (use a generic
+`monospace` stack), no export toolbar, no CDN scripts. Those would break the pack's
+one-file offline rule. (Provenance: see the Credit section of the repo README.)
 
 ## Canvas
 
