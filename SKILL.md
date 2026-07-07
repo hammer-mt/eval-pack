@@ -57,6 +57,10 @@ A slide order that works (top of the pyramid first):
 7. **Test artifacts** — the suite output; for scenario-style testing, one evidence block (screenshot, GIF, or transcript) per scenario. Coverage-matrix tables (behavior → which test pins it) live here, not on the work slides.
 8. **Limitations & caveats** — what you didn't *verify*: gaps, indirect evidence, paths exercised only by code reading. (Judgment calls belong on the Decisions slide, not here.) Never skip this slide or leave it empty; there is always something, and naming it is what makes the rest of the pack credible.
 
+## Step 3 — verify the deck itself (before handing it over)
+
+The pack is a claim too — that it renders. Open the finished file in a real browser (serve it over localhost if `file:` is blocked), navigate to **every slide**, screenshot each, and inspect the screenshots yourself the same way you inspected the evidence: mangled layout, text overflowing a diagram box, a code block missing its header, a broken cross-reference. This pass is non-negotiable after any programmatic edit to the HTML — a regex that mostly worked produces a slide that mostly renders, and a reviewer who hits a broken slide stops trusting the intact ones. If the deck styles both themes, check dark mode too (Playwright's `emulateMedia({colorScheme: 'dark'})` does it without touching OS settings). Fix, re-screenshot, and only then deliver the path.
+
 ## Technical requirements
 
 - **One file, works offline.** Inline all CSS and JS; embed every image and GIF as a `data:` URI; no CDN or external requests of any kind — the reviewer may open it with no network, and an external fetch that fails leaves a hole in the evidence. Run `scripts/embed_media.py <pack.html>` to inline local media references automatically.
