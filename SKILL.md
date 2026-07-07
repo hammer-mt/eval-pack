@@ -25,6 +25,8 @@ The reviewer wasn't there while the work happened. Assume they know the product 
 
 The pack has one visual grammar, applied everywhere: **chips classify, text asserts, red bar = old, green bar = new**. Section headers open with a chip (`BEFORE` / `AFTER` / `EVIDENCE` / `PROOF`), work items carry verdict chips (`SHIPPED` / `PARTIAL`), signatures carry `NEW` / `CHANGED`, decisions carry `ONE-WAY DOOR` / `TWO-WAY DOOR`, and every old-vs-new element (change cards, signature diffs, diagram nodes) uses the same red/green edge-bar treatment. Prefer cards over dense tables for anything a reviewer must actually read; keep tables for short enumerable facts. Don't invent new visual devices per slide — the reviewer should learn the language once, on slide 1, and never think about it again.
 
+The same rule applies to code: **every monospace block uses one shell** — a `.sig` panel with a header bar (chip + assertion, plus a `file:line` ref for code) over the same light mono canvas. Signature diffs tint whole lines (green added / red removed); captured evidence colors tokens (blue command, green pass, red fail). Never emit a bare, headerless code block — two block styles on one slide reads as inconsistency, not meaning.
+
 ## Step 1 — capture evidence (before writing any HTML)
 
 List the claims the work makes — one per feature, fix, or change. Then capture proof for each:

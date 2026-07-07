@@ -64,12 +64,7 @@
   a { color: var(--accent); }
 
   /* ---- Evidence components ---- */
-  .term {
-    background: var(--term-bg); color: var(--term-ink); border-radius: 10px;
-    border: 1px solid var(--line);
-    padding: 14px 16px; overflow-x: auto; font: 13px/1.5 ui-monospace, Menlo, monospace;
-    white-space: pre; margin: 12px 0;
-  }
+  .sig pre.term { padding: 12px 14px; color: var(--term-ink); white-space: pre; line-height: 1.5; }
   .term .cmd { color: var(--term-cmd); font-weight: 600; }
   .term .err { color: var(--term-err); font-weight: 600; }
   .term .ok { color: var(--term-ok); font-weight: 600; }
@@ -88,15 +83,17 @@
   .badge.changed { color: var(--warn); background: var(--warn-bg); }
   .commit { font: 13px ui-monospace, Menlo, monospace; color: var(--muted); margin: 0 0 22px; }
 
-  /* ---- Signature diffs (interfaces & function signatures, never bodies) ---- */
+  /* ---- Monospace blocks: ONE shell for everything (sig diffs AND captured evidence) ----
+     Header bar = chip + assertion (+ file ref); body = light mono canvas.
+     Diffs tint lines (.add/.del); captures color tokens (.cmd/.ok/.err). Never a bare code block. */
   .sig { border: 1px solid var(--line); border-radius: 10px; margin: 14px 0; background: var(--panel); overflow: hidden; }
   .sig-head {
     display: flex; gap: 10px; align-items: center; padding: 8px 14px;
-    border-bottom: 1px solid var(--line); font: 14px ui-monospace, Menlo, monospace;
+    border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 600;
   }
-  .sig-head .file { color: var(--muted); font-size: 12px; }
-  .sig pre { margin: 0; padding: 10px 0; overflow-x: auto; font: 13px/1.6 ui-monospace, Menlo, monospace; }
-  .sig pre > span, .sig .ctx { display: block; padding: 0 14px; }
+  .sig-head .file { color: var(--muted); font-size: 12px; font-weight: 400; font-family: ui-monospace, Menlo, monospace; }
+  .sig pre { margin: 0; padding: 10px 0; overflow-x: auto; font: 13px/1.6 ui-monospace, Menlo, monospace; background: var(--term-bg); }
+  .sig pre > span.add, .sig pre > span.del, .sig .ctx { display: block; padding: 0 14px; }
   .sig .add { background: var(--pass-bg); box-shadow: inset 3px 0 0 var(--pass); }
   .sig .del { background: var(--fail-bg); box-shadow: inset 3px 0 0 var(--fail); }
   .callout {
@@ -346,9 +343,11 @@
 }</span></pre>
     </div>
 
-    <h3><span class="badge neutral">EVIDENCE</span> REPLACE: what this capture proves</h3>
-    <div class="term"><span class="cmd">$ REPLACE: real command</span>
-REPLACE: real captured output — this slide absorbs its work item's evidence</div>
+    <div class="sig">
+      <div class="sig-head"><span class="badge neutral">EVIDENCE</span> <span>REPLACE: what this capture proves</span></div>
+      <pre class="term"><span class="cmd">$ REPLACE: real command</span>
+REPLACE: real captured output — this slide absorbs its work item's evidence</pre>
+    </div>
   </section>
 
   <!-- Work-item slides: one per change NOT covered by an architecture slide above.
@@ -356,9 +355,11 @@ REPLACE: real captured output — this slide absorbs its work item's evidence</d
   <section class="slide" data-title="REPLACE: work item">
     <h2>REPLACE: work item <span class="badge pass">SHIPPED</span></h2>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now (before → after) and why it matters. Key refs: <code>path/to/file.py:42</code></p>
-    <h3><span class="badge neutral">EVIDENCE</span> REPLACE: what this capture proves</h3>
-    <div class="term"><span class="cmd">$ REPLACE: real command</span>
-REPLACE: real captured output — trimmed, never altered</div>
+    <div class="sig">
+      <div class="sig-head"><span class="badge neutral">EVIDENCE</span> <span>REPLACE: what this capture proves</span></div>
+      <pre class="term"><span class="cmd">$ REPLACE: real command</span>
+REPLACE: real captured output — trimmed, never altered</pre>
+    </div>
     <figure class="shot">
       <img src="REPLACE-screenshot.png" alt="REPLACE: what this shows">
       <figcaption>REPLACE: what the reviewer is looking at, and what proves the claim.</figcaption>
@@ -369,9 +370,12 @@ REPLACE: real captured output — trimmed, never altered</div>
   <section class="slide" data-title="Test artifacts">
     <h2>Test artifacts</h2>
     <p class="lede">REPLACE: what is covered and how it was run.</p>
-    <div class="term"><span class="cmd">$ REPLACE: pytest command</span>
+    <div class="sig">
+      <div class="sig-head"><span class="badge neutral">EVIDENCE</span> <span>REPLACE: suite name</span></div>
+      <pre class="term"><span class="cmd">$ REPLACE: pytest command</span>
 REPLACE: real output
-<span class="ok">REPLACE: N passed in X.XXs</span></div>
+<span class="ok">REPLACE: N passed in X.XXs</span></pre>
+    </div>
   </section>
 
   <!-- Limitations: never empty. This slide is what makes the rest credible. -->
