@@ -1,6 +1,6 @@
 # eval-pack
 
-A [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) that builds an **evaluation pack**: a single self-contained HTML slide deck — before/after architecture diagrams, signature diffs, screenshots, animated GIFs, and real captured test output — that proves completed agent work actually runs, so a human can review an hour of agent work in a few minutes. The reviewer reads architectural changes first, then code, only if necessary.
+A Claude Code and Codex skill that builds an **evaluation pack**: a single self-contained HTML explainer for a pull request, completed feature, paper, research topic, strategy, or technical concept. Each pack leads with an executive summary, maps the argument visually, and makes the supporting evidence inspectable.
 
 Beyond making review fast, building the pack is a **verification forcing function**: you can't screenshot a feature that doesn't run, and you can't paste passing test output from a suite that fails. Much of the value comes from the bugs the agent finds and fixes while capturing evidence.
 
@@ -14,25 +14,32 @@ The diagram design system (`assets/diagram-style.md`) is distilled from the **ar
 
 ## Install
 
-Clone and symlink into your Claude Code skills directory:
+Clone once, then symlink into either or both skill directories:
 
 ```sh
 git clone https://github.com/hammer-mt/eval-pack.git
-ln -s "$(pwd)/eval-pack" ~/.claude/skills/eval-pack
+ln -s "$(pwd)/eval-pack" ~/.claude/skills/eval-pack  # Claude Code
+ln -s "$(pwd)/eval-pack" ~/.codex/skills/eval-pack   # Codex
 ```
 
-Then in any Claude Code session, ask for an "eval pack" after a chunk of work — or the skill will offer one proactively after substantial changes.
+Restart the agent, then ask for an “eval pack,” “paper explainer,” or “review pack.”
 
 ## What's in the box
 
 - `SKILL.md` — the skill definition: evidence-capture rules, slide order, honesty requirements
-- `assets/template.html` — the deck shell (left-hand index, keyboard nav, evidence components, before/after architecture slide, signature-diff blocks) that gets copied and filled in
+- `references/content-modes.md` — distinct narrative structures for changes, papers, and strategy topics
+- `references/editorial-design.md` — the editorial hierarchy and reusable visual grammar
+- `assets/template.html` — the responsive deck shell with numbered navigation, keyboard controls, end-of-slide next actions, evidence components, and reusable editorial layouts
 - `assets/diagram-style.md` — the self-contained SVG diagram design system (colors, arrows, spacing, before/after highlight convention)
 - `scripts/embed_media.py` — inlines local images/GIFs as `data:` URIs so the pack is one offline file
+- `scripts/validate_pack.py` — checks placeholders, offline assets, required sections, alt text, and navigation structure
 
 ## Ground rules the skill enforces
 
 - **Evidence, not claims** — every claim is backed by an artifact captured by actually running the thing; nothing fabricated or reconstructed
 - **Written for the reviewer** — every slide leads with a plain-language behavior sentence, before → after; no session jargon
+- **Executive-summary first** — the conclusion and decision appear before mechanics or methods
+- **Evidence and interpretation stay separate** — especially for papers and strategy topics
 - **One file, works offline** — all CSS/JS inline, media embedded as `data:` URIs, no external requests
+- **Mobile is first-class** — the index becomes a horizontal top rail and every slide retains a next action
 - **Honest by construction** — failing tests shown in red with real output, a mandatory Limitations slide, partial work labeled *partial*

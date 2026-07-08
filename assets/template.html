@@ -6,48 +6,57 @@
 <title>Eval Pack — REPLACE: topic</title>
 <style>
   :root {
-    --bg: #f6f7f9; --panel: #ffffff; --ink: #1a1d21; --muted: #6b7280;
-    --line: #e2e5ea; --accent: #2563eb; --accent-ink: #ffffff;
-    --term-bg: #f8f9fb; --term-ink: #24292f;
-    --term-cmd: #0550ae; --term-ok: #116329; --term-err: #a40e26;
-    --pass: #16803c; --pass-bg: #e7f6ec; --fail: #b91c1c; --fail-bg: #fdeaea;
-    --warn: #92600a; --warn-bg: #fdf3dc; --new: #4f46e5; --new-bg: #e9e9fd;
+    --bg: #f4efe6; --panel: #fffdf8; --paper-2: #ebe4d8;
+    --ink: #171611; --muted: #6d675d; --line: #d2c9bb; --line-strong: #a99f90;
+    --accent: #f45134; --accent-ink: #fffdf8; --navy: #183c53; --yellow: #eeb943;
+    --term-bg: #f6f1e8; --term-ink: #24211b;
+    --term-cmd: #174f72; --term-ok: #176337; --term-err: #a22727;
+    --pass: #176337; --pass-bg: #e2f0e5; --fail: #a22727; --fail-bg: #f6e2de;
+    --warn: #8a5a00; --warn-bg: #f8edc9; --new: #244f73; --new-bg: #e0eaf1;
+    --display: Georgia, "Times New Roman", serif;
+    --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #101216; --panel: #181b21; --ink: #e8eaee; --muted: #9aa3af;
-      --line: #2a2f38; --accent: #5b8def; --accent-ink: #0d1117;
-      --term-bg: #0b0d10; --term-ink: #cdd8e3;
-      --term-cmd: #8ab4f8; --term-ok: #69db7c; --term-err: #ff8a80;
-      --pass: #4ade80; --pass-bg: #12351f; --fail: #f87171; --fail-bg: #3a1414;
-      --warn: #fbbf24; --warn-bg: #3a2c0a; --new: #a5b4fc; --new-bg: #232450;
+      --bg: #151410; --panel: #1d1b17; --paper-2: #26231e;
+      --ink: #f1ecdf; --muted: #aaa295; --line: #39342c; --line-strong: #665e52;
+      --accent: #ff674a; --accent-ink: #151410; --navy: #8bc4e1; --yellow: #f4c75c;
+      --term-bg: #11100d; --term-ink: #e7dfd2;
+      --term-cmd: #8bc4e1; --term-ok: #75d091; --term-err: #ff9480;
+      --pass: #75d091; --pass-bg: #173323; --fail: #ff9480; --fail-bg: #3b1d18;
+      --warn: #f4c75c; --warn-bg: #3b3014; --new: #9ccce4; --new-bg: #1b3442;
     }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
   body {
     display: flex; background: var(--bg); color: var(--ink);
-    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font: 16px/1.58 var(--sans); text-rendering: optimizeLegibility;
   }
+  ::selection { background: var(--yellow); color: #171611; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
   /* ---- Sidebar / index ---- */
   #sidebar {
-    width: 264px; flex: none; height: 100vh; position: sticky; top: 0;
+    width: 292px; flex: none; height: 100vh; position: sticky; top: 0;
     display: flex; flex-direction: column;
-    border-right: 1px solid var(--line); background: var(--panel); padding: 20px 14px;
+    border-right: 1px solid var(--line); background: var(--panel); padding: 28px 18px 20px;
   }
-  .pack-kicker { font-size: 11px; letter-spacing: .14em; color: var(--accent); font-weight: 700; }
-  .pack-title { font-size: 18px; line-height: 1.3; margin: 6px 0 4px; }
-  .pack-meta { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .pack-kicker { font-size: 11px; letter-spacing: .18em; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+  .pack-title { font: 400 28px/1.02 var(--display); letter-spacing: -.025em; margin: 12px 0 10px; }
+  .pack-meta { font: 11px/1.45 var(--mono); color: var(--muted); margin-bottom: 28px; }
   #toc { flex: 1; overflow-y: auto; }
   #toc a {
-    display: block; padding: 7px 10px; margin: 2px 0; border-radius: 8px;
-    color: var(--ink); text-decoration: none; font-size: 14px;
+    display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px; align-items: start;
+    padding: 12px 10px; border-top: 1px solid var(--line);
+    color: var(--muted); text-decoration: none; font-size: 13px; line-height: 1.3;
   }
-  #toc a .n { color: var(--muted); font-size: 12px; margin-right: 8px; font-variant-numeric: tabular-nums; }
-  #toc a:hover { background: var(--bg); }
-  #toc a.active { background: var(--accent); color: var(--accent-ink); }
-  #toc a.active .n { color: var(--accent-ink); opacity: .75; }
+  #toc a:last-child { border-bottom: 1px solid var(--line); }
+  #toc a .n { color: var(--line-strong); font: 700 11px/1.5 var(--mono); font-variant-numeric: tabular-nums; }
+  #toc a:hover { color: var(--ink); background: var(--bg); }
+  #toc a.active { color: var(--ink); background: var(--paper-2); box-shadow: inset 4px 0 0 var(--accent); }
+  #toc a.active .n { color: var(--accent); }
   .keys { font-size: 12px; color: var(--muted); padding-top: 12px; border-top: 1px solid var(--line); }
   kbd {
     font: 11px ui-monospace, Menlo, monospace; padding: 1px 5px;
@@ -56,21 +65,54 @@
 
   /* ---- Slides ---- */
   #deck { flex: 1; min-width: 0; height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
-  .slide { display: none; max-width: 900px; margin: 0 auto; padding: 44px 48px 96px; }
+  .slide { display: none; max-width: 1120px; margin: 0 auto; padding: 64px 64px 112px; }
   .slide.current { display: block; }
-  .slide > h2 { font-size: 30px; margin: 0 0 6px; letter-spacing: -.01em; }
-  .slide > .lede { color: var(--muted); margin: 0 0 26px; font-size: 17px; }
-  h3 { font-size: 18px; margin: 28px 0 10px; }
+  .eyebrow { margin: 0 0 16px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+  .slide > h2 { max-width: 920px; font: 400 clamp(42px, 5vw, 68px)/.98 var(--display); margin: 0 0 18px; letter-spacing: -.04em; text-wrap: balance; }
+  .slide.hero > h2 { font-size: clamp(54px, 7vw, 92px); max-width: 980px; }
+  .slide > .lede { max-width: 760px; color: var(--muted); margin: 0 0 34px; font-size: 18px; line-height: 1.55; }
+  h3 { font: 400 28px/1.1 var(--display); margin: 34px 0 12px; letter-spacing: -.02em; }
+  p { max-width: 72ch; }
   a { color: var(--accent); }
+
+  /* ---- Editorial compositions ---- */
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(260px, .55fr); gap: 42px; align-items: end; margin: 36px 0 44px; border-top: 1px solid var(--line-strong); padding-top: 28px; }
+  .hero-grid .lede { margin: 0; color: var(--muted); font-size: 19px; }
+  .verdict { background: var(--navy); color: #fffdf8; padding: 26px; }
+  .verdict small { display: block; color: #bcd1dd; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  .verdict strong { display: block; margin-top: 12px; font: 400 34px/1 var(--display); }
+  .metric-strip { display: grid; grid-template-columns: repeat(4, 1fr); margin: 38px 0; border: 1px solid var(--line-strong); background: var(--panel); }
+  .metric { min-width: 0; padding: 22px; border-right: 1px solid var(--line); }
+  .metric:last-child { border-right: 0; }
+  .metric strong { display: block; font: 400 38px/1 var(--display); letter-spacing: -.03em; }
+  .metric span { display: block; margin-top: 9px; color: var(--muted); font-size: 12px; line-height: 1.35; }
+  .summary-list { margin: 34px 0; border-top: 1px solid var(--line-strong); }
+  .summary-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 18px; align-items: start; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .summary-row > span:first-child { color: var(--accent); font: 700 11px/1.5 var(--mono); }
+  .summary-row strong { display: block; font: 400 24px/1.15 var(--display); }
+  .summary-row p { margin: 5px 0 0; color: var(--muted); font-size: 14px; }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); margin: 30px 0; border: 1px solid var(--line-strong); background: var(--panel); }
+  .flow-step { position: relative; min-height: 190px; padding: 22px; border-right: 1px solid var(--line); }
+  .flow-step:last-child { border-right: 0; }
+  .flow-step b { color: var(--accent); font: 700 11px/1 var(--mono); }
+  .flow-step strong { display: block; margin-top: 48px; font: 400 25px/1.05 var(--display); }
+  .flow-step p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+  .flow-step::after { content: "→"; position: absolute; right: -13px; top: 82px; z-index: 1; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); }
+  .flow-step:last-child::after { display: none; }
+  .source-list { margin: 22px 0; border-top: 1px solid var(--line-strong); }
+  .source-item { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); align-items: start; }
+  .source-item > span { color: var(--accent); font: 700 11px/1.5 var(--mono); }
+  .source-item strong { display: block; }
+  .source-item p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
 
   /* ---- Evidence components ---- */
   .sig pre.term { padding: 12px 14px; color: var(--term-ink); white-space: pre; line-height: 1.5; }
   .term .cmd { color: var(--term-cmd); font-weight: 600; }
   .term .err { color: var(--term-err); font-weight: 600; }
   .term .ok { color: var(--term-ok); font-weight: 600; }
-  code { font: .9em ui-monospace, Menlo, monospace; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+  code { font: .9em var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; }
   .shot { margin: 14px 0; }
-  .shot img { max-width: 100%; border: 1px solid var(--line); border-radius: 10px; display: block; }
+  .shot img { max-width: 100%; border: 1px solid var(--line); border-radius: 3px; display: block; }
   .shot figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
   .badge {
     display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px;
@@ -81,35 +123,36 @@
   .badge.warn { color: var(--warn); background: var(--warn-bg); }
   .badge.new { color: var(--new); background: var(--new-bg); }
   .badge.changed { color: var(--warn); background: var(--warn-bg); }
-  .commit { font: 13px ui-monospace, Menlo, monospace; color: var(--muted); margin: 0 0 22px; }
+  .commit { font: 13px var(--mono); color: var(--muted); margin: 0 0 22px; }
 
   /* ---- Monospace blocks: ONE shell for everything (sig diffs AND captured evidence) ----
      Header bar = chip + assertion (+ file ref); body = light mono canvas.
      Diffs tint lines (.add/.del); captures color tokens (.cmd/.ok/.err). Never a bare code block. */
-  .sig { border: 1px solid var(--line); border-radius: 10px; margin: 14px 0; background: var(--panel); overflow: hidden; }
+  .sig { border: 1px solid var(--line); border-radius: 3px; margin: 14px 0; background: var(--panel); overflow: hidden; }
   .sig-head {
     display: flex; gap: 10px; align-items: center; padding: 8px 14px;
-    border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 600;
+    border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 650;
   }
-  .sig-head .file { color: var(--muted); font-size: 12px; font-weight: 400; font-family: ui-monospace, Menlo, monospace; }
-  .sig pre { margin: 0; padding: 10px 0; overflow-x: auto; font: 13px/1.6 ui-monospace, Menlo, monospace; background: var(--term-bg); }
+  .sig-head .file { color: var(--muted); font-size: 12px; font-weight: 400; font-family: var(--mono); }
+  .sig pre { margin: 0; padding: 10px 0; overflow-x: auto; font: 13px/1.6 var(--mono); background: var(--term-bg); }
   .sig pre > span.add, .sig pre > span.del, .sig .ctx { display: block; padding: 0 14px; }
   .sig .add { background: var(--pass-bg); box-shadow: inset 3px 0 0 var(--pass); }
   .sig .del { background: var(--fail-bg); box-shadow: inset 3px 0 0 var(--fail); }
   .callout {
     border: 1px solid var(--line); border-left: 4px solid var(--accent);
-    background: var(--panel); border-radius: 8px; padding: 12px 16px; margin: 14px 0;
+    background: var(--panel); border-radius: 0; padding: 16px 18px; margin: 18px 0;
   }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  .table-wrap { width: 100%; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; margin: 12px 0; font-size: 14px; }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
   td:first-child { font-weight: 600; }
 
   /* Before → after change cards: one card per behavior, red "was" panel → green "now" panel.
      Same visual grammar as the .sig diff bars: red bar = old, green bar = new. */
-  .change { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 12px 16px; margin: 12px 0; }
+  .change { border: 1px solid var(--line); border-radius: 3px; background: var(--panel); padding: 16px 18px; margin: 14px 0; }
   .c-title { font-weight: 600; margin-bottom: 8px; }
   .c-grid { display: grid; grid-template-columns: 1fr 26px 1fr; gap: 10px; align-items: stretch; }
   .was, .now { border-radius: 8px; padding: 8px 12px 9px; font-size: 14px; }
@@ -125,20 +168,20 @@
 
   /* Decision cards: one-way doors (hard to reverse) get the amber edge and come first. */
   .decision { border: 1px solid var(--line); border-left: 4px solid var(--warn);
-    border-radius: 8px; background: var(--panel); padding: 12px 16px; margin: 12px 0; }
+    border-radius: 0; background: var(--panel); padding: 16px 18px; margin: 14px 0; }
   .decision.two { border-left-color: var(--line); }
   .d-head { display: flex; gap: 10px; align-items: center; font-weight: 600; margin-bottom: 4px; }
   .d-body { font-size: 14px; }
   .d-body .alt { color: var(--muted); }
   .badge.door1 { color: var(--warn); background: var(--warn-bg); }
   .badge.door2 { color: var(--muted); background: var(--bg); border: 1px solid var(--line); }
-  .diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin: 14px 0; overflow-x: auto; }
+  .diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 22px; margin: 16px 0; overflow-x: auto; }
   .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
   /* ---- Prev/next footer ---- */
   #pager {
     position: fixed; right: 22px; bottom: 18px; display: flex; gap: 8px; align-items: center;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px;
+    background: var(--panel); border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 10px;
     font-size: 13px; color: var(--muted);
   }
   #pager button {
@@ -146,43 +189,96 @@
     border-radius: 999px; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
   }
   #pager button:hover { border-color: var(--accent); color: var(--accent); }
+  #pager button:disabled { opacity: .35; cursor: default; }
+  .slide-footer { display: flex; justify-content: flex-end; margin-top: 58px; padding-top: 24px; border-top: 1px solid var(--line-strong); }
+  .slide-next { display: inline-flex; align-items: center; gap: 18px; border: 0; background: var(--ink); color: var(--panel); padding: 14px 18px; font: 700 12px/1 var(--sans); letter-spacing: .05em; cursor: pointer; }
+  .slide-next span { color: var(--accent); font-size: 18px; }
+  .slide-next:hover { background: var(--accent); color: var(--accent-ink); }
+  .slide-next:hover span { color: inherit; }
+
+  @media (max-width: 900px) {
+    body { display: block; overflow: hidden; }
+    #sidebar { width: 100%; height: 142px; position: relative; padding: 15px 14px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+    .pack-kicker { font-size: 9px; }
+    .pack-title { font: 400 20px/1 var(--display); margin: 5px 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pack-meta { margin: 0 0 9px; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #toc { display: flex; flex: none; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+    #toc a { flex: 0 0 auto; display: flex; gap: 7px; min-width: max-content; padding: 9px 12px; border-top: 1px solid var(--line); border-bottom: 0; border-left: 1px solid var(--line); }
+    #toc a:last-child { border-right: 1px solid var(--line); border-bottom: 0; }
+    #toc a.active { box-shadow: inset 0 -3px 0 var(--accent); }
+    .keys { display: none; }
+    #deck { height: calc(100dvh - 142px); }
+    .slide { padding: 34px 20px 104px; }
+    .slide > h2, .slide.hero > h2 { font-size: clamp(42px, 12vw, 62px); }
+    .slide > .lede { font-size: 16px; }
+    .hero-grid, .grid2 { grid-template-columns: 1fr; gap: 18px; }
+    .metric-strip { grid-template-columns: repeat(2, 1fr); }
+    .metric:nth-child(2) { border-right: 0; }
+    .metric:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .summary-row { grid-template-columns: 30px minmax(0, 1fr); }
+    .summary-row > .badge { grid-column: 2; justify-self: start; }
+    .flow { grid-template-columns: 1fr; }
+    .flow-step { min-height: 150px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .flow-step:last-child { border-bottom: 0; }
+    .flow-step strong { margin-top: 30px; }
+    .flow-step::after { top: auto; right: 22px; bottom: -13px; transform: rotate(90deg); }
+    .source-item { grid-template-columns: 28px minmax(0, 1fr); }
+    .source-item > a { grid-column: 2; }
+    .sig-head { align-items: flex-start; flex-wrap: wrap; }
+    #pager { right: 12px; bottom: 12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #deck { scroll-behavior: auto; }
+  }
 
   @media print {
     #sidebar, #pager { display: none; }
     #deck { height: auto; overflow: visible; }
-    .slide { display: block; page-break-after: always; }
+    .slide { display: block; max-width: none; page-break-after: always; }
+    .slide-footer { display: none; }
   }
 </style>
 </head>
 <body>
 
-<aside id="sidebar">
+<aside id="sidebar" aria-label="Eval pack navigation">
   <div class="pack-kicker">EVAL PACK</div>
   <h1 class="pack-title">REPLACE: topic of the work</h1>
   <div class="pack-meta">REPLACE: yyyy-mm-dd · branch · N files changed</div>
-  <nav id="toc"></nav>
+  <nav id="toc" aria-label="Sections"></nav>
   <div class="keys"><kbd>←</kbd><kbd>→</kbd> or <kbd>J</kbd><kbd>K</kbd> to navigate</div>
 </aside>
 
 <main id="deck">
 
-  <!-- Slide 1: Summary. One row per work item with a verdict badge. -->
-  <section class="slide" data-title="Summary">
-    <h2>Summary</h2>
-    <p class="lede"><strong>Bottom line: REPLACE — the one-sentence verdict a reviewer could act on</strong> (e.g. "ship it — everything verified live except X"). REPLACE: what was asked and what was delivered.</p>
-    <table>
-      <tr><th>What changed (before → after)</th><th>Verdict</th><th>Evidence</th></tr>
-      <tr><td>REPLACE: behavior change one, e.g. "retired-plan subscribers now keep their plan instead of being dropped to free"</td><td><span class="badge pass">SHIPPED</span></td><td>REPLACE: slide 4</td></tr>
-      <tr><td>REPLACE: behavior change two</td><td><span class="badge warn">PARTIAL</span></td><td>REPLACE: slide 5</td></tr>
-    </table>
-    <div class="callout">REPLACE: anything found &amp; fixed during evidence capture, or the single most important thing the reviewer should know.</div>
+  <!-- Slide 1: Executive summary. The title is the conclusion, not the word "Summary". -->
+  <section class="slide hero" data-title="Executive summary">
+    <p class="eyebrow">The bottom line</p>
+    <h2>REPLACE: the one-sentence conclusion a reviewer can act on.</h2>
+    <div class="hero-grid">
+      <p class="lede">REPLACE: what was asked, what was delivered, who it affects, and why the result matters. Keep this short enough to repeat accurately after one read.</p>
+      <div class="verdict"><small>Decision</small><strong>REPLACE: Ship it</strong></div>
+    </div>
+    <div class="metric-strip" aria-label="Key evidence">
+      <div class="metric"><strong>REPLACE</strong><span>primary outcome with denominator</span></div>
+      <div class="metric"><strong>REPLACE</strong><span>comparison or lift</span></div>
+      <div class="metric"><strong>REPLACE</strong><span>runs, cases, or sources</span></div>
+      <div class="metric"><strong>REPLACE</strong><span>cost, latency, or uncertainty</span></div>
+    </div>
+    <div class="summary-list">
+      <div class="summary-row"><span>01</span><div><strong>REPLACE: first decisive claim</strong><p>REPLACE: one sentence on why it matters and where the evidence appears.</p></div><span class="badge pass">VERIFIED</span></div>
+      <div class="summary-row"><span>02</span><div><strong>REPLACE: second decisive claim</strong><p>REPLACE: one sentence on the evidence or remaining caveat.</p></div><span class="badge warn">PARTIAL</span></div>
+    </div>
+    <div class="callout">REPLACE: anything found and fixed during evidence capture, or the single most important caveat.</div>
   </section>
 
   <!-- Slide 2: What changed. One card per user-visible behavior: title, red BEFORE panel → green
        AFTER panel. This is the pyramid's second layer: a reviewer who reads only Summary + this
        slide should already have correct beliefs about the change. -->
   <section class="slide" data-title="What changed">
-    <h2>What changed</h2>
+    <p class="eyebrow">Behavioral delta</p>
+    <h2>REPLACE: the change in one assertion.</h2>
     <p class="lede">REPLACE: how the before side was captured (e.g. live against master) — every card states a behavior, not an implementation.</p>
     <div class="change">
       <div class="c-title">REPLACE: behavior, e.g. "Your message budget"</div>
@@ -208,7 +304,8 @@
        for two-way doors how to reverse. Reviewer should be able to say "understood and happy"
        (or not) from this slide alone. -->
   <section class="slide" data-title="Decisions">
-    <h2>Decisions you're signing off on</h2>
+    <p class="eyebrow">Judgment calls</p>
+    <h2>Decisions you&apos;re signing off on</h2>
     <p class="lede">REPLACE: one sentence on where the judgment (not the code) is concentrated. One-way doors first.</p>
 
     <div class="decision">
@@ -225,7 +322,8 @@
 
   <!-- Slide 3: Map. Inline SVG diagram with REAL file/function names. -->
   <section class="slide" data-title="Map">
-    <h2>Map</h2>
+    <p class="eyebrow">System map</p>
+    <h2>REPLACE: the relationship this map makes clear.</h2>
     <p class="lede">REPLACE: how the pieces connect / how data flows through the change.</p>
     <div class="diagram">
       <!-- Example diagram: replace boxes and labels with real names.
@@ -260,6 +358,19 @@
     </div>
   </section>
 
+  <!-- Optional operating-model or evidence-chain slide. Keep only when sequence matters. -->
+  <section class="slide" data-title="REPLACE: operating model">
+    <p class="eyebrow">Connected system</p>
+    <h2>REPLACE: one loop turns evidence into improvement.</h2>
+    <p class="lede">REPLACE: explain the relationship once; let the connected steps carry the detail.</p>
+    <div class="flow" aria-label="REPLACE: process description">
+      <div class="flow-step"><b>01</b><strong>REPLACE: Capture</strong><p>REPLACE: input, failure, or source.</p></div>
+      <div class="flow-step"><b>02</b><strong>REPLACE: Define</strong><p>REPLACE: decision rule or meaning.</p></div>
+      <div class="flow-step"><b>03</b><strong>REPLACE: Test</strong><p>REPLACE: comparison or evidence.</p></div>
+      <div class="flow-step"><b>04</b><strong>REPLACE: Decide</strong><p>REPLACE: action, owner, or outcome.</p></div>
+    </div>
+  </section>
+
   <!-- Architecture before/after: one slide per structural change (refactor, extraction, new seam),
        placed before the code-level slides — the reviewer reads architecture first, code only if necessary.
        These slides ABSORB their work items: fold that change's evidence in below the graphs rather than
@@ -269,6 +380,7 @@
        so the diagram follows the deck theme. Give arrow markers a unique id per <svg> — ids are global
        across the document. Signature diffs (.sig blocks below): signatures only — never function bodies. -->
   <section class="slide" data-title="REPLACE: architectural change">
+    <p class="eyebrow">Architecture</p>
     <h2>REPLACE: short name of the structural change <span class="badge pass">SHIPPED</span></h2>
     <p class="commit">REPLACE: abc1234 · commit subject line</p>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now and why it matters.</p>
@@ -353,6 +465,7 @@ REPLACE: real captured output — this slide absorbs its work item's evidence</p
   <!-- Work-item slides: one per change NOT covered by an architecture slide above.
        Plain-language claim on top, evidence directly below. -->
   <section class="slide" data-title="REPLACE: work item">
+    <p class="eyebrow">Proof</p>
     <h2>REPLACE: work item <span class="badge pass">SHIPPED</span></h2>
     <p class="lede">REPLACE: one plain-English sentence — what behaves differently now (before → after) and why it matters. Key refs: <code>path/to/file.py:42</code></p>
     <div class="sig">
@@ -368,7 +481,8 @@ REPLACE: real captured output — trimmed, never altered</pre>
 
   <!-- Test artifacts: real suite output, one evidence block per scenario if scenario-testing. -->
   <section class="slide" data-title="Test artifacts">
-    <h2>Test artifacts</h2>
+    <p class="eyebrow">Evidence</p>
+    <h2>REPLACE: the tests establish the required behavior.</h2>
     <p class="lede">REPLACE: what is covered and how it was run.</p>
     <div class="sig">
       <div class="sig-head"><span class="badge neutral">EVIDENCE</span> <span>REPLACE: suite name</span></div>
@@ -380,20 +494,26 @@ REPLACE: real output
 
   <!-- Limitations: never empty. This slide is what makes the rest credible. -->
   <section class="slide" data-title="Limitations">
-    <h2>Limitations &amp; caveats</h2>
-    <p class="lede">What was not verified, judgment calls made, and what to double-check by hand.</p>
+    <p class="eyebrow">Confidence boundary</p>
+    <h2>Limitations, open questions, and sources.</h2>
+    <p class="lede">State what was not verified and what would change the conclusion. Put judgment calls on the Decisions slide; keep this for evidence limits.</p>
     <ul>
       <li>REPLACE: a real gap or unverified path</li>
-      <li>REPLACE: a judgment call the reviewer might disagree with</li>
+      <li>REPLACE: a conflicting result, rollout risk, or external-validity limit</li>
     </ul>
+    <h3>Primary sources</h3>
+    <div class="source-list">
+      <div class="source-item"><span>01</span><div><strong>REPLACE: source title</strong><p>REPLACE: the specific contribution this source makes to the pack.</p></div><a href="REPLACE: source URL">Open source ↗</a></div>
+      <div class="source-item"><span>02</span><div><strong>REPLACE: evidence artifact</strong><p>REPLACE: command, run, dataset, PR, paper, or repository version.</p></div><a href="REPLACE: source URL">Inspect ↗</a></div>
+    </div>
   </section>
 
 </main>
 
 <div id="pager">
-  <button id="prev" title="Previous">←</button>
+  <button id="prev" title="Previous" aria-label="Previous section">←</button>
   <span id="count"></span>
-  <button id="next" title="Next">→</button>
+  <button id="next" title="Next" aria-label="Next section">→</button>
 </div>
 
 <script>
@@ -401,31 +521,61 @@ REPLACE: real output
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var toc = document.getElementById('toc');
   var count = document.getElementById('count');
+  var deck = document.getElementById('deck');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
   var idx = 0;
 
   slides.forEach(function (s, i) {
     if (!s.id) s.id = 'slide-' + (i + 1);
+    s.setAttribute('role', 'region');
+    s.setAttribute('aria-label', (s.dataset.title || s.id) + ', section ' + (i + 1) + ' of ' + slides.length);
     var a = document.createElement('a');
     a.href = '#' + s.id;
-    a.innerHTML = '<span class="n">' + (i + 1) + '</span>' + (s.dataset.title || s.id);
+    a.innerHTML = '<span class="n">' + String(i + 1).padStart(2, '0') + '</span><span>' + (s.dataset.title || s.id) + '</span>';
     a.addEventListener('click', function (e) { e.preventDefault(); show(i); });
     toc.appendChild(a);
+
+    var footer = document.createElement('div');
+    footer.className = 'slide-footer';
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'slide-next';
+    button.innerHTML = i === slides.length - 1 ? 'Back to summary <span>↺</span>' : 'Next: ' + (slides[i + 1].dataset.title || 'section') + ' <span>→</span>';
+    button.addEventListener('click', function () { show(i === slides.length - 1 ? 0 : i + 1); });
+    footer.appendChild(button);
+    s.appendChild(footer);
   });
 
   function show(i) {
     idx = Math.max(0, Math.min(slides.length - 1, i));
-    slides.forEach(function (s, j) { s.classList.toggle('current', j === idx); });
-    Array.prototype.forEach.call(toc.children, function (a, j) { a.classList.toggle('active', j === idx); });
+    slides.forEach(function (s, j) {
+      s.classList.toggle('current', j === idx);
+      s.setAttribute('aria-hidden', j === idx ? 'false' : 'true');
+    });
+    Array.prototype.forEach.call(toc.children, function (a, j) {
+      a.classList.toggle('active', j === idx);
+      if (j === idx) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
     count.textContent = (idx + 1) + ' / ' + slides.length;
+    prev.disabled = idx === 0;
+    next.disabled = idx === slides.length - 1;
     history.replaceState(null, '', '#' + slides[idx].id);
-    document.getElementById('deck').scrollTop = 0;
+    deck.scrollTop = 0;
+    if (window.matchMedia('(max-width: 900px)').matches) toc.children[idx].scrollIntoView({ block: 'nearest', inline: 'center' });
   }
 
-  document.getElementById('prev').addEventListener('click', function () { show(idx - 1); });
-  document.getElementById('next').addEventListener('click', function () { show(idx + 1); });
+  prev.addEventListener('click', function () { show(idx - 1); });
+  next.addEventListener('click', function () { show(idx + 1); });
   document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || /INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName)) return;
     if (e.key === 'ArrowRight' || e.key === 'j' || e.key === 'J' || e.key === ' ') show(idx + 1);
     if (e.key === 'ArrowLeft' || e.key === 'k' || e.key === 'K') show(idx - 1);
+  });
+  window.addEventListener('hashchange', function () {
+    var target = slides.findIndex(function (s) { return '#' + s.id === location.hash; });
+    if (target >= 0 && target !== idx) show(target);
   });
 
   var initial = slides.findIndex(function (s) { return '#' + s.id === location.hash; });
