@@ -1,0 +1,4 @@
+interface:
+  display_name: "Eval Pack"
+  short_description: "Build polished HTML review and explainer packs"
+  default_prompt: "Use $eval-pack to create a polished, evidence-backed HTML explainer for this work."

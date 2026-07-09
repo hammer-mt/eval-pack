@@ -1,78 +1,133 @@
 ---
 name: eval-pack
-description: Build an evaluation pack — a single self-contained HTML slide deck (left-hand index navigation) with diagrams, before/after architecture graphs, screenshots, animated GIFs, and real captured test output that proves completed work actually runs, so a human can review an hour of agent work in a few minutes. Use whenever the user says "eval pack", "evaluation pack", "review pack", "make this reviewable", "show me what you did", "prove it works", asks you to walk through your architectural changes (before/after), or asks how to review or verify a completed piece of work — and offer one proactively after finishing any substantial feature, refactor, bugfix, or multi-file change.
+description: Create a polished, self-contained HTML explainer or review pack for a pull request, completed feature, paper, research topic, strategy, or technical concept. Use when the user asks for an eval pack, evaluation pack, review pack, visual explainer, evidence pack, paper explainer, architecture walkthrough, or a concise way to understand and verify substantial work. Produce an executive-summary-first narrative with editorial typography, diagrams, citations, screenshots, and real evidence; work offline, support mobile, and make every important claim inspectable.
 ---
 
 # Eval Pack
 
-An eval pack is a curated, single-file HTML slide deck that lets a human review a large chunk of agent work in two or three minutes instead of fifteen minutes of digging through diffs and terminal scrollback. The reviewer clicks through slides with a left-hand index; each slide states what was done and shows captured proof that it works.
+Create one self-contained HTML page that lets a busy reviewer understand the argument, inspect the evidence, and decide what to do next without reconstructing the work from diffs, papers, or terminal history.
 
-The pack has a second job that is just as important as the first: it is a **verification forcing function**. You cannot screenshot a feature that doesn't run, and you cannot paste passing test output from a suite that fails. Building the pack honestly forces you to exercise your own work end to end — and much of the pack's value comes from the bugs you find and fix while capturing evidence.
+## Core contract
 
-## The golden rule: evidence, not claims
+1. **Lead with the answer.** State the conclusion, recommendation, or ship verdict before the supporting detail.
+2. **Make the narrative inspectable.** Back implementation claims with captured artifacts and research claims with direct source links.
+3. **Design for the reader.** Use plain-language action titles, visible hierarchy, and only the detail needed for the decision.
+4. **Separate evidence from interpretation.** Say what the artifact establishes, then what you infer from it.
+5. **Be honest about uncertainty.** Surface limitations, conflicting evidence, and unverified paths.
 
-Every claim in the pack is backed by an artifact you captured by actually running the thing. "Implemented X" is a claim; the screenshot, GIF, or terminal transcript of X working is evidence. Never fabricate, hand-edit, or reconstruct evidence from memory — a single faked artifact destroys the trust that makes every future pack useful. If you cannot capture evidence for something, that is itself a finding: it goes on the Limitations slide, stated plainly.
+## 1. Frame the pack before building
 
-## The second rule: write for the reviewer, not the implementer
+Write a five-line brief:
 
-The reviewer wasn't there while the work happened. Assume they know the product but not the codebase internals, and none of the shorthand from your session. Evidence proves the work runs; plain language is what lets the reviewer understand *what* they're approving:
+- **Mode:** change/PR, paper/research, or topic/strategy.
+- **Reader:** the specific person or role reviewing it.
+- **Decision:** what they should be able to approve, reject, believe, or do.
+- **Thesis:** one sentence that remains true if the reader stops after the first slide.
+- **Evidence:** the smallest set of artifacts or sources needed to support it.
 
-- **Name every change by its visible behavior, stated before → after.** "Subscribers on retired plans now keep their plan instead of being dropped to free" — not "refactored plan-resolution helper." Implementation vocabulary comes after the behavior sentence, if at all.
-- **Slide titles are assertions, not labels.** "Retired plans keep their price", not "Plan changes" — a reviewer skimming only the sidebar and headings should absorb the argument (McKinsey action titles).
-- **Every slide leads with one sentence a non-engineer could repeat back correctly.** File names, function names, and mechanics come second.
-- **No session jargon.** Codenames, shorthand, and nicknames invented during the work mean nothing to the reader — spell out what they refer to or drop them.
-- **Say why each item matters**: who is affected or what breaks if it's wrong. Importance is the reviewer's sorting key, so state it rather than making them infer it.
+Read [references/content-modes.md](references/content-modes.md) for the selected mode. Read [references/editorial-design.md](references/editorial-design.md) for every pack. For system or architecture diagrams, also read [assets/diagram-style.md](assets/diagram-style.md).
 
-The pack has one visual grammar, applied everywhere: **chips classify, text asserts, red bar = old, green bar = new**. Section headers open with a chip (`BEFORE` / `AFTER` / `EVIDENCE` / `PROOF`), work items carry verdict chips (`SHIPPED` / `PARTIAL`), signatures carry `NEW` / `CHANGED`, decisions carry `ONE-WAY DOOR` / `TWO-WAY DOOR`, and every old-vs-new element (change cards, signature diffs, diagram nodes) uses the same red/green edge-bar treatment. Prefer cards over dense tables for anything a reviewer must actually read; keep tables for short enumerable facts. Don't invent new visual devices per slide — the reviewer should learn the language once, on slide 1, and never think about it again.
+Do not start by filling the template. First decide the argument and remove any slide that does not advance it.
 
-The same rule applies to code: **every monospace block uses one shell** — a `.sig` panel with a header bar (chip + assertion, plus a `file:line` ref for code) over the same light mono canvas. Signature diffs tint whole lines (green added / red removed); captured evidence colors tokens (blue command, green pass, red fail). Never emit a bare, headerless code block — two block styles on one slide reads as inconsistency, not meaning.
+## 2. Gather evidence before writing HTML
 
-## Step 1 — capture evidence (before writing any HTML)
+Build a claim-to-evidence list. Every major claim must point to something the reviewer can inspect.
 
-List the claims the work makes — one per feature, fix, or change. Then capture proof for each:
+For code and product changes:
 
-- **Tests**: run the real suite and save the real output. Trim long output; never alter it. Keep the summary line with counts.
-- **CLI / backend work**: run real invocations and capture command + output verbatim. For bug fixes, also capture the *before* behavior (from the original file or `git stash`) so the pack shows failing → fixed.
-- **Web UI**: use the browser tools when available — drive the actual flow like a user would, screenshot each meaningful state, and record short GIFs of interactions. Driving the real page forces JavaScript errors into the open where you can fix them.
-- **Visual outputs** (charts, rendered documents): generate them for real and embed the actual output file.
+- Run the real test or build command and retain the unedited summary.
+- Exercise the actual user flow when possible; capture screenshots or short recordings of meaningful states.
+- Capture before and after behavior for a bug fix or migration when a safe base-commit checkout can reproduce it.
+- Derive architecture diagrams from real imports, call sites, schemas, or traces rather than memory.
+- Inspect every captured image for errors, empty states, wrong values, overflow, or accidental sensitive data.
 
-Then **inspect every screenshot yourself**. You are multimodal — read the image: rendering glitches, error text, empty states, misaligned layout, wrong numbers. You can't watch your own videos, but you can read your own screenshots, and this inspection catches what a green test suite misses. Found a problem? Fix the code, recapture, and keep a note — "found and fixed during evidence capture" is a great line for the summary slide.
+For papers and topics:
 
-If the environment can't produce some evidence type (no browser, no display, missing library), capture the nearest substitute — terminal transcript, programmatic render — and record the gap on the Limitations slide.
+- Read the primary source, not only an abstract or secondary summary.
+- Link directly to the paper, dataset, repository, talk, or post.
+- Record the population, comparison, metric, result, and limitation behind every quantitative claim.
+- Distinguish the authors' finding from your interpretation or recommendation.
+- Use short excerpts only when wording matters; prefer accurate paraphrase.
 
-## Step 2 — build the deck
+Never fabricate, reconstruct, or beautify evidence. If evidence cannot be captured, record that as a limitation.
 
-Copy `assets/template.html` (next to this file) and fill in the slides — don't rebuild the shell from scratch. The left index, keyboard navigation, styling, and evidence components are already wired; every `<section class="slide" data-title="...">` auto-populates the sidebar.
+## 3. Build the narrative pyramid
 
-**Structure the pack as a pyramid (bottom line up front).** The reviewer's time is the scarce resource: slide 1 states the answer — what shipped and whether it's safe to approve — and every layer below adds detail without changing the story. A reviewer should be able to stop after any slide and hold correct beliefs, just coarser ones. There is no hard slide cap; the discipline is that each slide earns its place — merge related changes, cut what a one-line mention covers, prefer one decisive capture over three overlapping ones, and never make the reviewer read down the pyramid to discover something that belongs at the top.
+Order information from decision to detail:
 
-A slide order that works (top of the pyramid first):
+1. Executive summary and bottom line.
+2. The few claims or changes that determine the decision.
+3. The operating model, causal map, comparison, or architecture that connects them.
+4. Direct evidence and implementation detail.
+5. Decisions, limitations, open questions, and sources.
 
-1. **Summary** — the bottom line first: one bolded sentence a reviewer could act on ("Ship it — everything verified live except X"), then what was asked, what was delivered, one line per work item with a verdict badge (shipped / partial / blocked). Each line names the change by its behavior in plain language.
-2. **What changed** — one `.change` card per user-visible behavior: the behavior as the card title, then a red **BEFORE** panel → green **AFTER** panel (the template has the component; prefer cards over dense tables — each card is one glanceable fact). State behaviors, not implementations; capture the before side for real when you can (run the old code — a worktree at the base commit works).
-3. **Decisions** — every judgment call made without asking, as decision cards ordered **one-way doors first**. A one-way door is hard to reverse once shipped (pricing and billing semantics, public API shapes, data migrations and backfills, anything users will notice being taken away); a two-way door is cheap to change later (a constant, an internal seam). For each: what was chosen, the alternative not taken, the tradeoff, and — for two-way doors — the one-line change that reverses it. This slide is the point of the pack: minimum cognitive load for the human to know whether they understand and are happy with what was decided on their behalf. Never skip it.
-4. **Map** — a diagram of what changed: boxes and arrows over real file and function names showing how the pieces connect or how data flows. Draw it per **`assets/diagram-style.md`** (next to this file) — the pack's self-contained diagram design system: theme-adaptive CSS-variable colors (the inline SVG inherits the deck theme — no dark canvas of its own), arrow z-order, spacing rules. Embed only inline `<svg>` — no HTML shell, Google Fonts, or CDN scripts; those violate the pack's offline single-file rule. The template's example Map slide shows the pattern. Simple and accurate beats elaborate. Skip the Map when an architecture before/after slide (next entry) already shows the same structure.
-5. **Architecture before/after** — when the work restructures anything (a refactor, an extraction, a new seam), one slide per structural change, placed before the code-level slides: the reviewer reads architectural changes first, then code, only if necessary. Each slide is the same dependency graph drawn twice over real module and function names — *before* with the problem nodes highlighted red (the setting read in six places, the shim, the inverted dependency), *after* with the new seams highlighted green. Head each graph with a claim the picture proves ("Before: settings.mode read in six places" / "After: two facades, zero mode reads anywhere") and label the slide with the commit hash + subject in the `.commit` kicker. Derive the graph from actual imports and call sites, not from memory — a structure diagram is evidence about structure and can be faked just as easily as a screenshot. When the interesting change is an interface rather than the graph, render the signatures as diffs instead: one `.sig` block per type or function with a NEW or CHANGED badge, removed lines red, added lines green, **signatures only — never bodies**. **These slides absorb their work items**: put the change's verdict badge, `file:line` refs, and captured evidence on the same slide, below the graphs — an architecture slide plus a separate work-item slide for the same change is duplication.
-6. **One slide per remaining work item** — for changes not covered by an architecture slide. Open with one plain-English sentence saying what changed in behavior terms and why it matters; then key `file:line` references, and the evidence right on the slide next to the claim it proves.
-7. **Test artifacts** — the suite output; for scenario-style testing, one evidence block (screenshot, GIF, or transcript) per scenario. Coverage-matrix tables (behavior → which test pins it) live here, not on the work slides.
-8. **Limitations & caveats** — what you didn't *verify*: gaps, indirect evidence, paths exercised only by code reading. (Judgment calls belong on the Decisions slide, not here.) Never skip this slide or leave it empty; there is always something, and naming it is what makes the rest of the pack credible.
+Use assertion titles: “The model-only baseline wins on routine work,” not “Results.” A reader scanning only the navigation and headings should understand the story.
 
-## Step 3 — verify the deck itself (before handing it over)
+Keep one idea per slide. Merge overlapping slides. Prefer one decisive visual over three repetitive screenshots.
 
-The pack is a claim too — that it renders. Open the finished file in a real browser (serve it over localhost if `file:` is blocked), navigate to **every slide**, screenshot each, and inspect the screenshots yourself the same way you inspected the evidence: mangled layout, text overflowing a diagram box, a code block missing its header, a broken cross-reference. This pass is non-negotiable after any programmatic edit to the HTML — a regex that mostly worked produces a slide that mostly renders, and a reviewer who hits a broken slide stops trusting the intact ones. If the deck styles both themes, check dark mode too (Playwright's `emulateMedia({colorScheme: 'dark'})` does it without touching OS settings). Fix, re-screenshot, and only then deliver the path.
+## 4. Build from the template
 
-## Technical requirements
+Copy [assets/template.html](assets/template.html) and replace or remove every `REPLACE` block. Preserve its landmarks, navigation, responsive behavior, visual tokens, and end-of-slide next buttons.
 
-- **One file, works offline.** Inline all CSS and JS; embed every image and GIF as a `data:` URI; no CDN or external requests of any kind — the reviewer may open it with no network, and an external fetch that fails leaves a hole in the evidence. Run `scripts/embed_media.py <pack.html>` to inline local media references automatically.
-- **Everything follows the deck theme — no hardcoded dark blocks.** Terminal evidence, diagrams, and tables all use the CSS variables, so the whole pack is light in light mode and dark in dark mode. Never ship a dark-canvas element inside the light theme.
-- **Keep it light.** Downscale screenshots to ≤1200px wide, keep GIFs under ~10 seconds, and aim for under ~15MB total so the file opens instantly.
-- **Diagrams are inline SVG** with real names from the codebase, not generic placeholders. Style them per `assets/diagram-style.md`: theme-adaptive `var(--…)` colors, no dark canvas, inline SVG only — no external fonts or scripts. Mermaid is fine as a sketching tool, but translate the result into inline SVG — a Mermaid CDN script breaks the offline rule.
-- **Where it goes**: save as `docs/eval-packs/<yyyy-mm-dd>-<topic>.html` in the repo the skill is invoked in, unless the user asked for a different location. Tell the user the exact path when you're done, and on macOS offer to `open` it.
+Use the template's visual grammar consistently:
+
+- Display serif for thesis and section statements; sans serif for explanation; monospace only for evidence and identifiers.
+- Warm paper, ink, rules, and one accent for structure; reserve red, green, and amber for meaning.
+- Numbered navigation, generous whitespace, strong rules, and a small set of repeated components.
+- Connected flows for sequences, before/after cards for change, metric strips for quantities, and evidence panels for proof.
+- Cards only when the border communicates a unit or relationship; avoid dashboard-style card soup.
+- Label axes directly on charts and put the meaning next to the line or point when possible.
+- Use real names in diagrams and direct labels instead of decorative icons.
+
+Do not create a second hero above every slide. Navigation should switch directly to the selected content, and every slide should end with a clear next action.
+
+## 5. Preserve evidence fidelity
+
+Use one evidence shell for terminal output, code signatures, source excerpts, and measurements:
+
+- Give every block a short assertion header.
+- Include a source, command, file, line, or run identifier.
+- Keep raw output intact; trim with an explicit ellipsis rather than rewriting.
+- Show failure states in red and passing states in green only when those colors represent actual outcomes.
+- Put a score beside its denominator, run count, comparison, and uncertainty when available.
+
+For decisions, show the choice, alternative, tradeoff, reversibility, and owner. Do not bury judgment calls inside implementation slides.
+
+## 6. Make the file portable
+
+- Keep all CSS and JavaScript inline.
+- Embed images and GIFs as `data:` URIs with `python3 scripts/embed_media.py <pack.html>`.
+- Use inline SVG for diagrams; do not load Mermaid, fonts, icons, or scripts from a CDN.
+- Downscale screenshots to at most 1200px wide, keep GIFs short, and aim for less than 15 MB.
+- Save to `docs/eval-packs/<yyyy-mm-dd>-<topic>.html` unless the user requests another path.
+- Include useful alt text and visible focus states.
+
+## 7. Validate the pack itself
+
+Run:
+
+```sh
+python3 scripts/embed_media.py <pack.html>
+python3 scripts/validate_pack.py <pack.html>
+```
+
+Then serve the file locally and inspect every slide in a real browser:
+
+- Navigate with the index, keyboard, floating pager, and end-of-slide next button.
+- Check desktop and mobile widths.
+- Confirm headings, diagrams, tables, and evidence blocks do not overflow.
+- Confirm every link, source, image, and cross-reference resolves.
+- Check light and dark modes when both are retained.
+- Fix and repeat after any programmatic HTML edit.
+
+Do not claim browser verification if the environment cannot perform it. Report the nearest validation performed and the gap.
+
+## 8. Hand off clearly
+
+Return the exact file path, the pack's mode and decision, the validation commands run, and any unresolved limitation. On macOS, offer to open the file.
 
 ## Honesty
 
-The pack is a review instrument, not a sales brochure. Failing tests appear in red with their real output. Half-finished work is labeled *partial* on the summary slide. A pack that hides problems is worse than no pack at all, because it converts the reviewer's trust into missed bugs.
+Treat the pack as a review instrument, not a sales brochure. Show failing tests, mixed results, partial work, and contradictory sources plainly. Trust is the product.
 
-## Credit
-
-See the Credit section of this repo's `README.md` for the ideas and material this skill builds on.
+See the repository README for concept and design-system credits.
